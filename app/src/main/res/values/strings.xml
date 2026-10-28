@@ -8,4 +8,37 @@
     <string name="discover_placeholder">Bags near you will appear here.</string>
     <string name="orders_placeholder">Your reservations will appear here.</string>
     <string name="favorites_placeholder">Your favorite stores will appear here.</string>
+    <string name="merchant_placeholder">Your store and bags will appear here.</string>
+
+    <string name="logout">Log out</string>
+    <string name="retry">Try again</string>
+    <string name="error_no_internet">No internet connection. Check your connection and try again.</string>
+    <string name="error_unknown">Something went wrong. Please try again.</string>
+
+    <string name="auth_name">Name</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Password</string>
+    <string name="role_customer">Customer</string>
+    <string name="role_merchant">Merchant</string>
+
+    <string name="login_title">Welcome back</string>
+    <string name="login_button">Log in</string>
+    <string name="login_forgot_password">Forgot password?</string>
+    <string name="login_to_register">No account yet? Sign up</string>
+
+    <string name="register_title">Create an account</string>
+    <string name="register_role_label">I am a</string>
+    <string name="register_button">Sign up</string>
+    <string name="register_to_login">Already have an account? Log in</string>
+
+    <string name="auth_reset_sent">Check your inbox: we sent you a link to reset your password.</string>
+    <string name="auth_error_invalid_email">Enter a valid email address.</string>
+    <string name="auth_error_password_required">Enter your password.</string>
+    <string name="auth_error_name_required">Enter your name.</string>
+    <string name="auth_error_role_required">Choose customer or merchant.</string>
+    <string name="auth_error_reset_needs_email">Enter your email address first.</string>
+    <string name="auth_error_invalid_credentials">Wrong email or password.</string>
+    <string name="auth_error_email_in_use">This email address is already in use.</string>
+    <string name="auth_error_weak_password">Use at least 6 characters.</string>
+    <string name="auth_error_profile_missing">Your profile could not be found. Please sign up again.</string>
 </resources>

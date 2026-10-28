@@ -129,4 +129,6 @@ captures/
 .cxx/
 *.apk
 *.aab
+# Firebase config contains an API key: each teammate downloads it from the Firebase console
+google-services.json
 

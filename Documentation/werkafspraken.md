@@ -19,6 +19,8 @@ Het project is een eigen versie van een app voor verrassingspakketten met voedse
 
 ## Commando's
 
+Eenmalig: download `google-services.json` uit de Firebase-console (Projectinstellingen › Jouw apps › NoWaste) en zet het in `app/`. Het bestand staat in `.gitignore` en wordt niet gecommit. Zonder dit bestand bouwt de app niet.
+
 Voer deze commando's uit in de projectmap (op Windows `gradlew.bat` in plaats van `./gradlew`):
 
 | Doel                                | Commando                         |

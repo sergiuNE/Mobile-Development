@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// Paste this in Firebase console > Firestore Database > Rules and click Publish.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // A user only creates and edits their own profile and cannot change their role afterwards
+    match /users/{userId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.auth.uid == userId
+        && request.resource.data.role in ['customer', 'merchant'];
+      allow update: if signedIn() && request.auth.uid == userId
+        && request.resource.data.role == resource.data.role;
+      allow delete: if false;
+    }
+
+    match /stores/{storeId} {
+      allow read, write: if signedIn();
+    }
+
+    match /bags/{bagId} {
+      allow read, write: if signedIn();
+    }
+
+    match /reservations/{reservationId} {
+      allow read, write: if signedIn();
+    }
+  }
+}

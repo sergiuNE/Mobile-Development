@@ -45,6 +45,21 @@ Voorstel, samen te bevestigen. Beide teamleden moeten alle code kunnen uitleggen
 
 Must-vereisten gaan altijd voor Should-vereisten (A4, K6, K11, H6, H7, G4).
 
+## Voortgang
+
+**Sergiu**
+- Documentatie: werkafspraken, planning, voorwaarden om te slagen, README.
+- Branding: naam NoWaste, logo en app-icoon (`UI/`).
+- Login en registratie met rol klant of handelaar, uitloggen, startscherm per rol, foutmeldingen, wachtwoord vergeten (A1, A2, A3, A4). Branch `feature-6-auth-login`.
+- Firestore security rules in `firestore.rules`.
+
+**Laurens**
+- Android-project opgezet: Kotlin, Jetpack Compose, type-safe Navigation Compose, package `be.ap.nowaste`.
+- Bottom navigation voor de klant met de tabs Discover, Orders en Favorites (placeholderschermen).
+- Thema met het NoWaste-palet, light en dark mode, app-icoon.
+
+**Nog open uit week 1:** tab Kaart in de bottom navigation (K4).
+
 ## Wekelijks overleg
 
 Noteer na elk overleg met de docent wat af is en wat gepland is.
