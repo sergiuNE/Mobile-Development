@@ -62,7 +62,8 @@ coverage/
 ~$*
 
 # ---------- AI agents ----------
-.claude/settings.local.json
+CLAUDE.md
+.claude/
 AGENTS.md
 AGENTS.override.md
 codex.md
