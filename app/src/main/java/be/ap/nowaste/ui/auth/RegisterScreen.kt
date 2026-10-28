@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.ap.nowaste.R
 import be.ap.nowaste.data.auth.UserRole
+import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun RegisterScreen(
@@ -25,7 +26,8 @@ fun RegisterScreen(
     onLoginClick: () -> Unit,
     viewModel: RegisterViewModel = viewModel(),
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    // Main.immediate: text field updates arrive in the same frame, so fast typing loses no characters
+    val state by viewModel.uiState.collectAsStateWithLifecycle(context = Dispatchers.Main.immediate)
 
     LaunchedEffect(state.registeredRole) {
         state.registeredRole?.let(onRegistered)
