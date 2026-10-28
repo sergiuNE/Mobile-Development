@@ -10,7 +10,7 @@ Gebouwd met Kotlin, Jetpack Compose, Firebase, Room en OSMDroid.
 
 **[Planning](Documentation/planning.md)** · [UI](UI/UI.md)
 
-Created by Neagu Sergiu!
-CO-Owned by Laurens Rombout!
-Year: 2026-2027
+Created by Neagu Sergiu!\
+CO-Owned by Laurens Rombout!\
+Year: 2026-2027\
 School: AP Hogeschool
