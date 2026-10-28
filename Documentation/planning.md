@@ -51,4 +51,4 @@ Noteer na elk overleg met de docent wat af is en wat gepland is.
 
 | Datum | Wie aanwezig | Af | Gepland volgende week |
 |---|---|---|---|
-| | | | |
+| 28/10 | | Sergiu: structuur en documentatie. Laurens: UI en naam. Samen: planning. | |
