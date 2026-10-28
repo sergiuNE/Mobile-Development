@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">NoWaste</string>
+
+    <string name="nav_discover">Discover</string>
+    <string name="nav_orders">Orders</string>
+    <string name="nav_favorites">Favorites</string>
+
+    <string name="discover_placeholder">Bags near you will appear here.</string>
+    <string name="orders_placeholder">Your reservations will appear here.</string>
+    <string name="favorites_placeholder">Your favorite stores will appear here.</string>
+</resources>
