@@ -8,7 +8,6 @@
     <string name="discover_placeholder">Bags near you will appear here.</string>
     <string name="orders_placeholder">Your reservations will appear here.</string>
     <string name="favorites_placeholder">Your favorite stores will appear here.</string>
-    <string name="merchant_placeholder">Your store and bags will appear here.</string>
 
     <string name="logout">Log out</string>
     <string name="retry">Try again</string>
@@ -41,4 +40,34 @@
     <string name="auth_error_email_in_use">This email address is already in use.</string>
     <string name="auth_error_weak_password">Use at least 6 characters.</string>
     <string name="auth_error_profile_missing">Your profile could not be found. Please sign up again.</string>
+
+    <string name="store_my_store">My store</string>
+    <string name="store_title_new">Set up your store</string>
+    <string name="store_title_edit">Store details</string>
+    <string name="store_name">Store name</string>
+    <string name="store_category">Category</string>
+    <string name="store_location">Location</string>
+    <string name="store_location_hint">Tap the map to place the pin, or drag the pin to move it.</string>
+    <string name="store_address">Address</string>
+    <string name="store_address_hint">Filled in automatically from the pin. You can still change it.</string>
+    <string name="store_street">Street and number</string>
+    <string name="store_postcode">Postcode</string>
+    <string name="store_city">City</string>
+    <string name="store_geocoding">Looking up address…</string>
+    <string name="store_create">Create store</string>
+    <string name="store_save">Save changes</string>
+    <string name="store_saved">Your store has been saved.</string>
+    <string name="store_error_name_required">Enter the name of your store.</string>
+    <string name="store_error_category_required">Choose a category.</string>
+    <string name="store_error_location_required">Place a pin on the map.</string>
+    <string name="store_error_address_required">Fill in street, postcode and city.</string>
+    <string name="store_error_no_address">No address found here. Move the pin or type the address.</string>
+    <string name="store_error_geocoding_offline">No internet: the address could not be looked up. Type it yourself or try again.</string>
+    <string name="store_error_geocoding">The address could not be looked up. Type it yourself or move the pin.</string>
+
+    <string name="category_bakery">Bakery</string>
+    <string name="category_supermarket">Supermarket</string>
+    <string name="category_restaurant">Restaurant</string>
+    <string name="category_cafe">Café</string>
+    <string name="category_other">Other</string>
 </resources>

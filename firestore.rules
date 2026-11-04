@@ -18,8 +18,13 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // One store per merchant: the document id is the owner's uid, so only the owner can write it
     match /stores/{storeId} {
-      allow read, write: if signedIn();
+      allow read: if signedIn();
+      allow create, update: if signedIn() && request.auth.uid == storeId
+        && request.resource.data.ownerId == request.auth.uid
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'merchant';
+      allow delete: if signedIn() && request.auth.uid == storeId;
     }
 
     match /bags/{bagId} {
