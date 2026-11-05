@@ -12,6 +12,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.firestore
 import com.google.firebase.Firebase
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withTimeoutOrNull
+
+// Firebase keeps retrying on a bad connection, so give up after this and show "no internet"
+private const val NETWORK_TIMEOUT_MS = 15_000L
 
 class AuthRepository(
     private val auth: FirebaseAuth = Firebase.auth,
@@ -37,6 +41,7 @@ class AuthRepository(
             try {
                 users.document(result.user!!.uid).set(profile).await()
             } catch (e: Exception) {
+                // Also runs on a timeout from mapErrors
                 // Without a profile the account has no role, so remove it and let the user retry
                 result.user?.delete()
                 throw e
@@ -61,7 +66,7 @@ class AuthRepository(
     }
 
     private suspend fun <T> mapErrors(block: suspend () -> T): T = try {
-        block()
+        withTimeoutOrNull(NETWORK_TIMEOUT_MS) { block() } ?: throw AuthException(AuthError.NO_INTERNET)
     } catch (e: AuthException) {
         throw e
     } catch (e: Exception) {
