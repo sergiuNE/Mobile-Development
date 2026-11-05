@@ -9,8 +9,29 @@
     <string name="orders_placeholder">Your reservations will appear here.</string>
     <string name="favorites_placeholder">Your favorite stores will appear here.</string>
 
+    <string name="discover_bags_near">Bags near %1$s</string>
+    <string name="discover_bags_near_you">Bags near you</string>
+    <string name="discover_change_location">Change</string>
+    <string name="discover_approximate">Using your approximate location.</string>
+    <string name="discover_error_city_offline">No internet: your town could not be looked up.</string>
+    <string name="discover_error_city">Your town could not be looked up.</string>
+
+    <string name="location_title">Find bags near you</string>
+    <string name="location_explanation">NoWaste uses your location to show surprise bags nearby. You can also choose a location on the map yourself.</string>
+    <string name="location_use_mine">Use my location</string>
+    <string name="location_choose_on_map">Choose on map</string>
+    <string name="location_finding">Finding your location…</string>
+    <string name="location_pick_title">Choose your location</string>
+    <string name="location_pick_hint">Tap the map to place the pin, or drag the pin to move it.</string>
+    <string name="location_confirm">Use this location</string>
+    <string name="location_denied">Without access to your location, choose a location on the map.</string>
+    <string name="location_permanently_denied">Location access is turned off for NoWaste. Allow it in the app settings, or choose a location on the map.</string>
+    <string name="location_open_settings">Open settings</string>
+    <string name="location_unavailable">Your location could not be found. Turn on location on your phone, or choose a location on the map.</string>
+
     <string name="logout">Log out</string>
     <string name="retry">Try again</string>
+    <string name="cancel">Cancel</string>
     <string name="error_no_internet">No internet connection. Check your connection and try again.</string>
     <string name="error_unknown">Something went wrong. Please try again.</string>
 

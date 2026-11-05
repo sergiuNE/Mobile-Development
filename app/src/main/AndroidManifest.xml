@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Check for internet before saving (data/NetworkStatus.kt) -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Bags near the customer (K1); FINE and COARSE together, required since Android 12 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
