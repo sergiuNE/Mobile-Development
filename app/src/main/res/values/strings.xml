@@ -2,10 +2,10 @@
     <string name="app_name">NoWaste</string>
 
     <string name="nav_discover">Discover</string>
+    <string name="nav_map">Map</string>
     <string name="nav_orders">Orders</string>
     <string name="nav_favorites">Favorites</string>
 
-    <string name="discover_placeholder">Bags near you will appear here.</string>
     <string name="orders_placeholder">Your reservations will appear here.</string>
     <string name="favorites_placeholder">Your favorite stores will appear here.</string>
 
@@ -15,6 +15,22 @@
     <string name="discover_approximate">Using your approximate location.</string>
     <string name="discover_error_city_offline">No internet: your town could not be looked up.</string>
     <string name="discover_error_city">Your town could not be looked up.</string>
+    <string name="discover_no_bags">No bags available right now. Check back later.</string>
+    <string name="discover_no_bags_filtered">No bags match your filters. Try another distance or category.</string>
+    <string name="discover_filter_distance">Within %1$d km</string>
+
+    <string name="map_loading_bags">Loading bags…</string>
+    <string name="map_view_store">View</string>
+    <plurals name="map_bags_available">
+        <item quantity="one">%1$d bag available</item>
+        <item quantity="other">%1$d bags available</item>
+    </plurals>
+    <string name="discover_offline">You\'re offline. These bags may be out of date.</string>
+    <string name="discover_pickup_window">Pick up %1$s – %2$s</string>
+    <plurals name="discover_left_and_distance">
+        <item quantity="one">%1$d left · %2$.1f km</item>
+        <item quantity="other">%1$d left · %2$.1f km</item>
+    </plurals>
 
     <string name="location_title">Find bags near you</string>
     <string name="location_explanation">NoWaste uses your location to show surprise bags nearby. You can also choose a location on the map yourself.</string>

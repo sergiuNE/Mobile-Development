@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -43,6 +44,8 @@ import be.ap.nowaste.data.auth.UserRole
 import be.ap.nowaste.ui.auth.LoginScreen
 import be.ap.nowaste.ui.auth.RegisterScreen
 import be.ap.nowaste.ui.discover.DiscoverScreen
+import be.ap.nowaste.ui.discover.DiscoverViewModel
+import be.ap.nowaste.ui.discover.MapScreen
 import be.ap.nowaste.ui.favorites.FavoritesScreen
 import be.ap.nowaste.ui.merchant.MerchantHomeScreen
 import be.ap.nowaste.ui.orders.OrdersScreen
@@ -55,6 +58,7 @@ private data class TopLevelDestination(
 
 private val customerDestinations = listOf(
     TopLevelDestination(Discover, R.string.nav_discover, Icons.Filled.Search),
+    TopLevelDestination(BagsMap, R.string.nav_map, Icons.Filled.Place),
     TopLevelDestination(Orders, R.string.nav_orders, Icons.AutoMirrored.Filled.List),
     TopLevelDestination(Favorites, R.string.nav_favorites, Icons.Filled.Favorite),
 )
@@ -114,6 +118,8 @@ private fun AppNavHost(startDestination: Any, onLogout: () -> Unit) {
 @Composable
 private fun CustomerHome(onLogout: () -> Unit) {
     val navController = rememberNavController()
+    // Created here, not per tab: list and map share the location, the bags and the filters
+    val discoverViewModel: DiscoverViewModel = viewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
 
@@ -150,7 +156,8 @@ private fun CustomerHome(onLogout: () -> Unit) {
             startDestination = Discover,
             modifier = Modifier.padding(innerPadding),
         ) {
-            composable<Discover> { DiscoverScreen() }
+            composable<Discover> { DiscoverScreen(discoverViewModel) }
+            composable<BagsMap> { MapScreen(discoverViewModel) }
             composable<Orders> { OrdersScreen() }
             composable<Favorites> { FavoritesScreen() }
         }

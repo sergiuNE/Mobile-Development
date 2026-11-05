@@ -7,6 +7,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.snapshots
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
 class StoreRepository(
@@ -19,6 +22,12 @@ class StoreRepository(
     private val myStoreDocument get() = stores.document(requireNotNull(auth.currentUser).uid)
 
     suspend fun getMyStore(): Store? = myStoreDocument.get().await().toStore()
+
+    /** Category per store id, updated in realtime. Bags do not have a category, so the filter (K6) looks it up here. */
+    fun categoriesByStore(): Flow<Map<String, StoreCategory>> =
+        stores.snapshots().map { snapshot ->
+            snapshot.documents.associate { it.id to (StoreCategory.fromValue(it.getString("category")) ?: StoreCategory.OTHER) }
+        }
 
     suspend fun saveMyStore(
         name: String,

@@ -22,6 +22,17 @@ Gebouwd met Kotlin, Jetpack Compose, Firebase, Room en OSMDroid.
 
 Alle commando's staan in [werkafspraken.md](Documentation/werkafspraken.md#commandos).
 
+## Testdata
+
+`tools/seed-firestore.ps1` vult Firestore met 5 testwinkels rond AP Hogeschool en hun pakketten, zodat de klantschermen data hebben. Het script maakt per winkel een handelaarsaccount (`seed-<categorie>@nowaste.test`) en schrijft als die handelaar, dus de security rules gelden gewoon. Drie pakketten mogen bij de klant **niet** verschijnen (uitverkocht, ophaalvenster voorbij, niet actief) om de filters te testen.
+
+```powershell
+.\tools\seed-firestore.ps1 -Password "<wachtwoord voor de testaccounts>"
+# Ergens anders: -Latitude 51.0543 -Longitude 3.7174
+```
+
+De ophaalvensters starten vanaf het moment dat je het script uitvoert: voer het opnieuw uit voor verse pakketten. Dat kan veilig, dezelfde documenten worden overschreven. Gebruik telkens hetzelfde wachtwoord.
+
 ## Projectstructuur
 
 | Map | Inhoud |

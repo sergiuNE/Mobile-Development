@@ -22,6 +22,9 @@ data object MerchantHome
 data object Discover
 
 @Serializable
+data object BagsMap
+
+@Serializable
 data object Orders
 
 @Serializable
