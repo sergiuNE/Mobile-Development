@@ -10,6 +10,15 @@ Gebouwd met Kotlin, Jetpack Compose, Firebase, Room en OSMDroid.
 
 **[Planning](Documentation/planning.md)** · [UI](UI/UI.md)
 
+## Team
+
+**Team 03**
+
+| Naam | Rol |
+|---|---|
+| Neagu Sergiu | Account en handelaar (A1–A4, H1–H7) |
+| Laurens Rombout | Klant (K1–K12) |
+
 ## Installatie
 
 1. Installeer Android Studio (met Android SDK 37).
