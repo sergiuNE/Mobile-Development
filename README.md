@@ -24,14 +24,16 @@ Alle commando's staan in [werkafspraken.md](Documentation/werkafspraken.md#comma
 
 ## Testdata
 
-`tools/seed-firestore.ps1` vult Firestore met 5 testwinkels rond AP Hogeschool en hun pakketten, zodat de klantschermen data hebben. Het script maakt per winkel een handelaarsaccount (`seed-<categorie>@nowaste.test`) en schrijft als die handelaar, dus de security rules gelden gewoon. Drie pakketten mogen bij de klant **niet** verschijnen (uitverkocht, ophaalvenster voorbij, niet actief) om de filters te testen.
+`tools/seed-firestore.ps1` vult Firestore met 10 testwinkels rond AP Hogeschool en hun pakketten, zodat de klantschermen data hebben voor een demo. Het script maakt per winkel een handelaarsaccount (`demo-<sleutel>@nowaste.test`, bv. `demo-bakery`, `demo-cafe2`) en schrijft als die handelaar, dus de security rules gelden gewoon. Daarnaast maakt het een klantaccount `demo-customer@nowaste.test` om mee in te loggen. Drie pakketten mogen bij de klant **niet** verschijnen (uitverkocht, ophaalvenster voorbij, niet actief) om de filters te testen.
 
 ```powershell
-.\tools\seed-firestore.ps1 -Password "<wachtwoord voor de testaccounts>"
+.\tools\seed-firestore.ps1
 # Ergens anders: -Latitude 51.0543 -Longitude 3.7174
 ```
 
-De ophaalvensters starten vanaf het moment dat je het script uitvoert: voer het opnieuw uit voor verse pakketten. Dat kan veilig, dezelfde documenten worden overschreven. Gebruik telkens hetzelfde wachtwoord.
+Zonder `-Password` gebruikt het script `seed.password` uit `local.properties` (niet gecommit). Staat dat er nog niet, dan maakt het een wachtwoord aan en zet het daar. Elk teamlid heeft dus een eigen wachtwoord voor de demo-accounts op zijn machine: maakte de andere de accounts al aan, geef dan zijn wachtwoord mee met `-Password`.
+
+De ophaalvensters starten vanaf het moment dat je het script uitvoert en de meeste pakketten blijven ongeveer 8 uur beschikbaar. Voer het script uit op de dag van de demo. Opnieuw uitvoeren kan veilig, dezelfde documenten worden overschreven.
 
 ## Projectstructuur
 
