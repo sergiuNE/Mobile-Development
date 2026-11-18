@@ -18,6 +18,7 @@
     <string name="discover_no_bags">No bags available right now. Check back later.</string>
     <string name="discover_no_bags_filtered">No bags match your filters. Try another distance or category.</string>
     <string name="discover_filter_distance">Within %1$d km</string>
+    <string name="discover_filter_any_distance">Any distance</string>
 
     <string name="map_loading_bags">Loading bags…</string>
     <string name="map_view_store">View</string>
@@ -50,6 +51,7 @@
     <string name="cancel">Cancel</string>
     <string name="error_no_internet">No internet connection. Check your connection and try again.</string>
     <string name="error_unknown">Something went wrong. Please try again.</string>
+    <string name="error_slow_connection">The connection is slow. Your change will be saved as soon as the connection is back.</string>
 
     <string name="auth_name">Name</string>
     <string name="auth_email">Email</string>
@@ -101,6 +103,66 @@
     <string name="store_error_no_address">No address found here. Move the pin or type the address.</string>
     <string name="store_error_geocoding_offline">No internet: the address could not be looked up. Type it yourself or try again.</string>
     <string name="store_error_geocoding">The address could not be looked up. Type it yourself or move the pin.</string>
+
+    <string name="back">Back</string>
+    <string name="ok">OK</string>
+
+    <string name="bags_my_bags">My bags</string>
+    <string name="bags_new">New bag</string>
+    <string name="bags_empty">No bags yet. Tap “New bag” to offer your first surprise bag.</string>
+    <string name="bags_no_store">Set up your store first: customers see its name and location with every bag.</string>
+    <string name="bags_go_to_store">Set up store</string>
+    <plurals name="bags_left_and_reserved">
+        <item quantity="one">%1$d of %2$d left · %3$d reserved</item>
+        <item quantity="other">%1$d of %2$d left · %3$d reserved</item>
+    </plurals>
+    <string name="bags_online">Online</string>
+    <string name="bags_edit">Edit</string>
+    <string name="bags_status_offline">Offline: customers don\'t see this bag</string>
+    <string name="bags_status_ended">Pickup window is over</string>
+    <string name="bags_status_sold_out">Sold out</string>
+    <string name="bags_now_online">The bag is online again.</string>
+    <string name="bags_now_offline">The bag is offline: customers no longer see it.</string>
+    <string name="bags_check_code">Check pickup code</string>
+    <string name="bags_code_hint">Enter the 6-character code the customer shows you.</string>
+    <string name="bags_code_label">Pickup code</string>
+    <string name="bags_code_check">Check</string>
+    <string name="bags_code_not_found">No open reservation with this code. Check the code with the customer.</string>
+    <plurals name="bags_code_found">
+        <item quantity="one">%1$s · %2$d bag</item>
+        <item quantity="other">%1$s · %2$d bags</item>
+    </plurals>
+    <string name="bags_code_no_longer_open">This reservation was cancelled or collected in the meantime.</string>
+    <string name="bags_mark_collected">Mark as collected</string>
+    <string name="bags_collected">The reservation is marked as collected.</string>
+
+    <string name="bag_form_title_new">Offer a surprise bag</string>
+    <string name="bag_form_title_edit">Edit bag</string>
+    <string name="bag_take_photo">Take photo</string>
+    <string name="bag_choose_photo">From gallery</string>
+    <string name="bag_title">Title</string>
+    <string name="bag_description">Description</string>
+    <string name="bag_price">Price (€)</string>
+    <string name="bag_original_value">Original value (€)</string>
+    <string name="bag_quantity">Number of bags</string>
+    <string name="bag_pickup">Pickup window today</string>
+    <string name="bag_pickup_from">From %1$s</string>
+    <string name="bag_pickup_until">Until %1$s</string>
+    <string name="bag_pickup_choose">--:--</string>
+    <string name="bag_offer">Offer bag</string>
+    <string name="bag_save">Save changes</string>
+    <string name="bag_error_title_required">Enter a title.</string>
+    <string name="bag_error_description_required">Describe what could be in the bag.</string>
+    <string name="bag_error_price_invalid">Enter an amount, for example 3.50.</string>
+    <string name="bag_error_price_not_lower">The price must be lower than the original value.</string>
+    <string name="bag_error_quantity">Enter a number from 1 to 99.</string>
+    <string name="bag_error_pickup_required">Choose a start and end time.</string>
+    <string name="bag_error_pickup_order">The end time must be after the start time.</string>
+    <string name="bag_error_pickup_over">This pickup window is already over. Choose a later end time.</string>
+    <string name="bag_error_photo_required">Add a photo of the bag.</string>
+    <string name="bag_error_photo_unreadable">This photo could not be read. Try another one.</string>
+    <string name="bag_error_no_camera">No camera app found. Choose a photo from the gallery.</string>
+    <string name="bag_error_below_reserved">Customers already reserved more bags than this. Choose a higher number.</string>
 
     <string name="category_bakery">Bakery</string>
     <string name="category_supermarket">Supermarket</string>

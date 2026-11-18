@@ -14,6 +14,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.core.content.ContextCompat
+import be.ap.nowaste.R
 import be.ap.nowaste.data.geocoding.NominatimClient
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
@@ -88,6 +90,8 @@ private class PinMarker(mapView: MapView, onReleased: (Coordinates) -> Unit) : M
         private set
 
     init {
+        // Own pin instead of the default OSMDroid marker (feedback lector)
+        icon = ContextCompat.getDrawable(mapView.context, R.drawable.ic_store_marker)
         setAnchor(ANCHOR_CENTER, ANCHOR_BOTTOM)
         isDraggable = true
         infoWindow = null

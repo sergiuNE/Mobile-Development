@@ -50,8 +50,9 @@ private const val THUMBNAIL_SIZE_PX = 200
 // Expired bags have to leave the list, also when nothing changes in Firestore
 private const val CLOCK_TICK_MS = 60_000L
 
-/** Choices for the distance filter (K6). */
-val DISTANCE_FILTERS_KM = listOf(1, 5, 10)
+/** Range of the distance slider (K6, slider on feedback lector). The last step means "any distance". */
+const val MIN_DISTANCE_KM = 1
+const val MAX_DISTANCE_KM = 20
 
 /** A bag as shown in the list: texts are formatted and the photo is decoded already. */
 data class BagListItem(
@@ -138,8 +139,9 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
 
     fun retryBags() = observeBags()
 
-    /** Tap the selected distance again to turn the filter off. */
-    fun onDistanceFilter(km: Int) = _uiState.update { it.copy(maxDistanceKm = if (it.maxDistanceKm == km) null else km) }
+    /** Slider at [MAX_DISTANCE_KM] means no distance limit. */
+    fun onDistanceFilter(km: Int) =
+        _uiState.update { it.copy(maxDistanceKm = km.coerceIn(MIN_DISTANCE_KM, MAX_DISTANCE_KM).takeIf { km < MAX_DISTANCE_KM }) }
 
     fun onCategoryFilter(category: StoreCategory) =
         _uiState.update { it.copy(category = if (it.category == category) null else category) }

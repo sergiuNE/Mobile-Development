@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Store pin in the NoWaste colors, replaces the default OSMDroid marker (feedback lector). Tip at the bottom center. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="50dp"
+    android:viewportWidth="40"
+    android:viewportHeight="50">
+    <!-- Pin with a thin white edge, so it stays visible on dark map areas -->
+    <path
+        android:fillColor="#1A759F"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:pathData="M20,1.5C9.8,1.5 1.5,9.8 1.5,20C1.5,33.5 20,48.5 20,48.5C20,48.5 38.5,33.5 38.5,20C38.5,9.8 30.2,1.5 20,1.5Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,8.5a11.5,11.5 0,1 0,0.01 0Z" />
+    <!-- Shopping bag -->
+    <path
+        android:fillColor="#52B69A"
+        android:pathData="M13.5,16.5L26.5,16.5L27.5,27.5L12.5,27.5Z" />
+    <path
+        android:strokeColor="#52B69A"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M16.8,16.5L16.8,14.8C16.8,13 18.2,11.8 20,11.8C21.8,11.8 23.2,13 23.2,14.8L23.2,16.5" />
+</vector>

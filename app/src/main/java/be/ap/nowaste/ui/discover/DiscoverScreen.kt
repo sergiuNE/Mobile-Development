@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
@@ -36,6 +37,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -48,6 +50,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,6 +64,7 @@ import be.ap.nowaste.data.store.StoreCategory
 import be.ap.nowaste.ui.auth.FormMessage
 import be.ap.nowaste.ui.map.PinPickerMap
 import be.ap.nowaste.ui.merchant.labelRes
+import kotlin.math.roundToInt
 
 private val LOCATION_PERMISSIONS = arrayOf(
     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -215,20 +220,43 @@ private fun BagsNearby(state: DiscoverUiState, viewModel: DiscoverViewModel, mod
     }
 }
 
-/** Filters (K6): max distance and category. Tapping a selected chip turns it off. */
+/** Filters (K6): max distance with a slider (feedback lector) and category chips. Tapping a selected chip turns it off. */
 @Composable
 internal fun BagFilterChips(state: DiscoverUiState, viewModel: DiscoverViewModel, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        DistanceSlider(state.maxDistanceKm, viewModel::onDistanceFilter)
+        CategoryChips(state, viewModel)
+    }
+}
+
+@Composable
+private fun DistanceSlider(maxDistanceKm: Int?, onChange: (Int) -> Unit) {
+    val km = maxDistanceKm ?: MAX_DISTANCE_KM
+    val label = if (maxDistanceKm == null) {
+        stringResource(R.string.discover_filter_any_distance)
+    } else {
+        stringResource(R.string.discover_filter_distance, maxDistanceKm)
+    }
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(label, style = MaterialTheme.typography.labelLarge, modifier = Modifier.widthIn(min = 104.dp))
+        Slider(
+            value = km.toFloat(),
+            onValueChange = { onChange(it.roundToInt()) },
+            valueRange = MIN_DISTANCE_KM.toFloat()..MAX_DISTANCE_KM.toFloat(),
+            // One step per km
+            steps = MAX_DISTANCE_KM - MIN_DISTANCE_KM - 1,
+            // At "any distance" the thumb sits at the screen edge: without this, dragging it is the system back gesture
+            modifier = Modifier.weight(1f).systemGestureExclusion().semantics { contentDescription = label },
+        )
+    }
+}
+
+@Composable
+private fun CategoryChips(state: DiscoverUiState, viewModel: DiscoverViewModel) {
     Row(
-        modifier = modifier.horizontalScroll(rememberScrollState()),
+        modifier = Modifier.horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        DISTANCE_FILTERS_KM.forEach { km ->
-            FilterChip(
-                selected = state.maxDistanceKm == km,
-                onClick = { viewModel.onDistanceFilter(km) },
-                label = { Text(stringResource(R.string.discover_filter_distance, km)) },
-            )
-        }
         StoreCategory.entries.forEach { category ->
             FilterChip(
                 selected = state.category == category,

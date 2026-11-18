@@ -50,6 +50,8 @@ fun StoresMap(
             setOnMarkerClickListener { _, _ -> true }
         }
     }
+    // Own store pin instead of the default OSMDroid marker (feedback lector)
+    val storeIcon = remember(context) { ContextCompat.getDrawable(context, R.drawable.ic_store_marker) }
     // Not Compose state: only the map itself needs these, changing them must not recompose
     val storeMarkers = remember(mapView) { mutableListOf<Marker>() }
     val centeredOn = remember(mapView) { CenteredOn() }
@@ -78,6 +80,7 @@ fun StoresMap(
             storeMarkers.clear()
             stores.forEach { store ->
                 val marker = Marker(map).apply {
+                    icon = storeIcon
                     position = GeoPoint(store.location.latitude, store.location.longitude)
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     infoWindow = null
