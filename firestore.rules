@@ -27,12 +27,46 @@ service cloud.firestore {
       allow delete: if signedIn() && request.auth.uid == storeId;
     }
 
-    match /bags/{bagId} {
-      allow read, write: if signedIn();
+    function isMerchant() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'merchant';
     }
 
+    function validQuantityLeft() {
+      return request.resource.data.quantityLeft is int
+        && request.resource.data.quantityLeft >= 0
+        && request.resource.data.quantityLeft <= request.resource.data.quantityTotal;
+    }
+
+    // A merchant creates and edits only the bags of their own store (storeId == their uid).
+    // Customers may only change quantityLeft, within 0..quantityTotal: reserving (K8) and cancelling (K11).
+    match /bags/{bagId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && isMerchant() && request.resource.data.storeId == request.auth.uid
+        && validQuantityLeft();
+      allow update: if signedIn() && validQuantityLeft() && (
+        (resource.data.storeId == request.auth.uid && request.resource.data.storeId == request.auth.uid)
+        || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['quantityLeft'])
+      );
+      allow delete: if signedIn() && resource.data.storeId == request.auth.uid;
+    }
+
+    // Only the customer and the store of a reservation see it. A new reservation is always "reserved" and
+    // belongs to the store of its bag. Afterwards only the status changes, and only away from "reserved":
+    // the store marks it collected (H6), the customer cancels it (K11). Collected or cancelled is final.
     match /reservations/{reservationId} {
-      allow read, write: if signedIn();
+      allow read: if signedIn()
+        && (resource.data.customerId == request.auth.uid || resource.data.storeId == request.auth.uid);
+      allow create: if signedIn() && request.resource.data.customerId == request.auth.uid
+        && request.resource.data.status == 'reserved'
+        && request.resource.data.quantity is int && request.resource.data.quantity >= 1
+        && get(/databases/$(database)/documents/bags/$(request.resource.data.bagId)).data.storeId == request.resource.data.storeId;
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && resource.data.status == 'reserved'
+        && (
+          (resource.data.storeId == request.auth.uid && request.resource.data.status == 'collected')
+          || (resource.data.customerId == request.auth.uid && request.resource.data.status == 'cancelled')
+        );
     }
   }
 }

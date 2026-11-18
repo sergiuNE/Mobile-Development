@@ -29,3 +29,14 @@ data object Orders
 
 @Serializable
 data object Favorites
+
+// Merchant tabs inside MerchantHome
+@Serializable
+data object MyBags
+
+@Serializable
+data object MyStore
+
+/** Create a bag (H3) when [bagId] is null, otherwise edit it (H7). */
+@Serializable
+data class BagForm(val bagId: String? = null)
