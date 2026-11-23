@@ -32,6 +32,9 @@ class BagRepository(private val firestore: FirebaseFirestore = Firebase.firestor
 
     suspend fun getBag(bagId: String): Bag? = bags.document(bagId).get().await().toBag()
 
+    /** One bag, updated in realtime (K7): the number left drops while the customer looks at it. Null when it is gone. */
+    fun bag(bagId: String): Flow<Bag?> = bags.document(bagId).snapshots().map { it.toBag() }
+
     /** Id for a bag that is not saved yet. Saving twice with the same id gives one bag, not two. */
     fun newBagId(): String = bags.document().id
 
@@ -87,25 +90,27 @@ class BagRepository(private val firestore: FirebaseFirestore = Firebase.firestor
         bags.whereEqualTo("active", true).snapshots(MetadataChanges.INCLUDE).map { snapshot ->
             BagsResult(snapshot.documents.mapNotNull { it.toBag() }, snapshot.metadata.isFromCache)
         }
+}
 
-    private fun DocumentSnapshot.toBag(): Bag? {
-        val location = getGeoPoint("location") ?: return null
-        return Bag(
-            id = id,
-            storeId = getString("storeId").orEmpty(),
-            storeName = getString("storeName").orEmpty(),
-            title = getString("title").orEmpty(),
-            description = getString("description").orEmpty(),
-            price = getDouble("price") ?: 0.0,
-            originalValue = getDouble("originalValue") ?: 0.0,
-            quantityTotal = getLong("quantityTotal")?.toInt() ?: 0,
-            quantityLeft = getLong("quantityLeft")?.toInt() ?: 0,
-            pickupStart = getTimestamp("pickupStart")?.toDate()?.time ?: 0,
-            pickupEnd = getTimestamp("pickupEnd")?.toDate()?.time ?: 0,
-            latitude = location.latitude,
-            longitude = location.longitude,
-            active = getBoolean("active") ?: false,
-            photoBase64 = getString("photoBase64").orEmpty(),
-        )
-    }
+/** Also used by [be.ap.nowaste.data.reservation.ReservationRepository] inside the reserve transaction (K8). */
+internal fun DocumentSnapshot.toBag(): Bag? {
+    if (!exists()) return null
+    val location = getGeoPoint("location") ?: return null
+    return Bag(
+        id = id,
+        storeId = getString("storeId").orEmpty(),
+        storeName = getString("storeName").orEmpty(),
+        title = getString("title").orEmpty(),
+        description = getString("description").orEmpty(),
+        price = getDouble("price") ?: 0.0,
+        originalValue = getDouble("originalValue") ?: 0.0,
+        quantityTotal = getLong("quantityTotal")?.toInt() ?: 0,
+        quantityLeft = getLong("quantityLeft")?.toInt() ?: 0,
+        pickupStart = getTimestamp("pickupStart")?.toDate()?.time ?: 0,
+        pickupEnd = getTimestamp("pickupEnd")?.toDate()?.time ?: 0,
+        latitude = location.latitude,
+        longitude = location.longitude,
+        active = getBoolean("active") ?: false,
+        photoBase64 = getString("photoBase64").orEmpty(),
+    )
 }

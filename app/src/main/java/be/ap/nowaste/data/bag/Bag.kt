@@ -23,6 +23,9 @@ data class Bag(
     /** K3: still at least 1 left and the pickup window has not passed yet. */
     fun isAvailable(now: Long): Boolean = active && quantityLeft > 0 && pickupEnd > now
 
+    /** K8: at least 1 and at most what is left, and only while the bag is available. */
+    fun canReserve(quantity: Int, now: Long): Boolean = isAvailable(now) && quantity in 1..quantityLeft
+
     fun distanceInMeters(latitude: Double, longitude: Double): Double =
         GeoPoint(this.latitude, this.longitude).distanceToAsDouble(GeoPoint(latitude, longitude))
 }

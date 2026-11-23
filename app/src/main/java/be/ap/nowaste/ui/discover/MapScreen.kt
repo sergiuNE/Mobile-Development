@@ -34,7 +34,7 @@ import be.ap.nowaste.ui.map.StoresMap
 
 /** Map tab (K4): your location and a marker per store with available bags, with the same filters as the list. */
 @Composable
-fun MapScreen(viewModel: DiscoverViewModel, modifier: Modifier = Modifier) {
+fun MapScreen(viewModel: DiscoverViewModel, onBagClick: (String) -> Unit, modifier: Modifier = Modifier) {
     LocationGate(viewModel, modifier) { state ->
         Box(modifier = modifier.fillMaxSize()) {
             StoresMap(
@@ -67,7 +67,16 @@ fun MapScreen(viewModel: DiscoverViewModel, modifier: Modifier = Modifier) {
         }
 
         state.viewedStore?.let { store ->
-            StoreBagsSheet(store, state.bags.filter { it.storeId == store.id }, onDismiss = viewModel::onCloseStore)
+            StoreBagsSheet(
+                store = store,
+                bags = state.bags.filter { it.storeId == store.id },
+                onBagClick = { bagId ->
+                    // Closed first, so the sheet is not open again when the customer comes back
+                    viewModel.onCloseStore()
+                    onBagClick(bagId)
+                },
+                onDismiss = viewModel::onCloseStore,
+            )
         }
     }
 }
@@ -124,7 +133,7 @@ private fun SelectedStoreCard(store: StoreOnMap, onView: () -> Unit, modifier: M
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun StoreBagsSheet(store: StoreOnMap, bags: List<BagListItem>, onDismiss: () -> Unit) {
+private fun StoreBagsSheet(store: StoreOnMap, bags: List<BagListItem>, onBagClick: (String) -> Unit, onDismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Text(
             store.name,
@@ -135,7 +144,7 @@ private fun StoreBagsSheet(store: StoreOnMap, bags: List<BagListItem>, onDismiss
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(16.dp),
         ) {
-            items(bags, key = { it.id }) { BagCard(it) }
+            items(bags, key = { it.id }) { bag -> BagCard(bag, onClick = { onBagClick(bag.id) }) }
         }
     }
 }

@@ -23,6 +23,9 @@ class StoreRepository(
 
     suspend fun getMyStore(): Store? = myStoreDocument.get().await().toStore()
 
+    /** Any store, e.g. for its address on the bag detail screen (K7). */
+    suspend fun getStore(storeId: String): Store? = stores.document(storeId).get().await().toStore()
+
     /** Category per store id, updated in realtime. Bags do not have a category, so the filter (K6) looks it up here. */
     fun categoriesByStore(): Flow<Map<String, StoreCategory>> =
         stores.snapshots().map { snapshot ->

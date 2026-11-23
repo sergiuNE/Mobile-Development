@@ -2,7 +2,9 @@ package be.ap.nowaste.data.reservation
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.util.Random
 
 class ReservationTest {
 
@@ -33,6 +35,25 @@ class ReservationTest {
         assertNull(findOpenReservation(reservations, "QQ11QQ"))
         assertNull(findOpenReservation(reservations, "ZZZZZZ"))
         assertNull(findOpenReservation(reservations, ""))
+    }
+
+    @Test
+    fun pickupCodeHasSixReadableCharacters() {
+        val random = Random(42)
+        repeat(100) {
+            val code = newPickupCode(random)
+            assertEquals(PICKUP_CODE_LENGTH, code.length)
+            // Capitals and digits only, without the look-alikes 0, O, 1 and I
+            assertTrue(code, code.all { it in 'A'..'Z' || it in '2'..'9' })
+            assertTrue(code, code.none { it in "0O1I" })
+        }
+    }
+
+    @Test
+    fun newPickupCodeIsFoundByTheMerchant() {
+        val code = newPickupCode()
+        val list = reservations + reservation("r5", "bagC", 1, code, ReservationStatus.RESERVED)
+        assertEquals("r5", findOpenReservation(list, code.lowercase())?.id)
     }
 
     @Test

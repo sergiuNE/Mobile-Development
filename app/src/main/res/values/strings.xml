@@ -33,6 +33,27 @@
         <item quantity="other">%1$d left · %2$.1f km</item>
     </plurals>
 
+    <plurals name="bag_detail_left">
+        <item quantity="one">%1$d bag left</item>
+        <item quantity="other">%1$d bags left</item>
+    </plurals>
+    <string name="bag_detail_unavailable">This bag is no longer available.</string>
+    <string name="bag_detail_not_found">This bag no longer exists.</string>
+    <string name="bag_detail_reserve">Reserve</string>
+    <string name="bag_detail_more">One more</string>
+    <string name="bag_detail_fewer">One less</string>
+    <string name="minus_sign" translatable="false">−</string>
+    <string name="reserve_error_not_enough">Not enough bags left: someone else was faster. Choose fewer bags.</string>
+    <string name="reserve_error_slow">The connection is slow. Your reservation may still go through: check Orders before you try again.</string>
+    <string name="reserved_title">Bag reserved!</string>
+    <plurals name="reserved_summary">
+        <item quantity="one">%1$d × %2$s at %3$s</item>
+        <item quantity="other">%1$d × %2$s at %3$s</item>
+    </plurals>
+    <string name="reserved_code_label">Your pickup code</string>
+    <string name="reserved_instructions">Show this code in the store between %1$s and %2$s.</string>
+    <string name="reserved_done">Done</string>
+
     <string name="location_title">Find bags near you</string>
     <string name="location_explanation">NoWaste uses your location to show surprise bags nearby. You can also choose a location on the map yourself.</string>
     <string name="location_use_mine">Use my location</string>

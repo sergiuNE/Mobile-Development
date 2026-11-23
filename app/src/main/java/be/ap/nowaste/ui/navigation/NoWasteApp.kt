@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Favorite
@@ -43,6 +44,7 @@ import be.ap.nowaste.R
 import be.ap.nowaste.data.auth.UserRole
 import be.ap.nowaste.ui.auth.LoginScreen
 import be.ap.nowaste.ui.auth.RegisterScreen
+import be.ap.nowaste.ui.bagdetail.BagDetailScreen
 import be.ap.nowaste.ui.discover.DiscoverScreen
 import be.ap.nowaste.ui.discover.DiscoverViewModel
 import be.ap.nowaste.ui.discover.MapScreen
@@ -122,16 +124,26 @@ private fun CustomerHome(onLogout: () -> Unit) {
     val discoverViewModel: DiscoverViewModel = viewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
+    val isBagDetail = currentDestination?.hasRoute(BagDetail::class) == true
+    val openBag = { bagId: String -> navController.navigate(BagDetail(bagId)) }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
+                navigationIcon = {
+                    if (isBagDetail) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
+                        }
+                    }
+                },
                 actions = { LogoutButton(onLogout) },
             )
         },
         bottomBar = {
-            NavigationBar {
+            // The detail gets the whole screen; back returns to the list or the map
+            if (!isBagDetail) NavigationBar {
                 customerDestinations.forEach { destination ->
                     NavigationBarItem(
                         selected = currentDestination?.hasRoute(destination.route::class) == true,
@@ -156,10 +168,11 @@ private fun CustomerHome(onLogout: () -> Unit) {
             startDestination = Discover,
             modifier = Modifier.padding(innerPadding),
         ) {
-            composable<Discover> { DiscoverScreen(discoverViewModel) }
-            composable<BagsMap> { MapScreen(discoverViewModel) }
+            composable<Discover> { DiscoverScreen(discoverViewModel, onBagClick = openBag) }
+            composable<BagsMap> { MapScreen(discoverViewModel, onBagClick = openBag) }
             composable<Orders> { OrdersScreen() }
             composable<Favorites> { FavoritesScreen() }
+            composable<BagDetail> { BagDetailScreen(onDone = { navController.popBackStack() }) }
         }
     }
 }

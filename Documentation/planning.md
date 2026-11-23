@@ -17,7 +17,7 @@ Voorstel, samen te bevestigen. Beide teamleden moeten alle code kunnen uitleggen
 **Laurens:** klant
 - [x] Locatiepermissie en gekozen locatie, "Bags near {city}" (Engelse versie van "Pakketten in de buurt van {gemeente}") (K1, K2)
 - [x] Ontdekken-lijst, kaart met markers, realtime updates, filters (K3, K4, K5, K6)
-- [ ] Pakketdetail, reserveren, ophaalcode (K7, K8, K9)
+- [x] Pakketdetail, reserveren, ophaalcode (K7, K8, K9)
 - [ ] Bestellingen offline via Room, annuleren (K10, K11)
 - [ ] Favorieten in Room (K12)
 
@@ -42,7 +42,7 @@ Voorstel, samen te bevestigen. Beide teamleden moeten alle code kunnen uitleggen
 | 4 | Pakket aanbieden met foto, Mijn pakketten realtime | H3, H4, H5 | Sergiu | Klaar (18/11) |
 | 4 | Kaartweergave met markers, realtime updates | K4, K5 | Laurens | Klaar (5/11, vervroegd) |
 | 5 | Ophaalcode controleren, pakket aanpassen of offline halen, wachtwoord vergeten | H6, H7, A4 | Sergiu | Klaar: A4 (28/10), H6 en H7 (18/11, vervroegd) |
-| 5 | Pakketdetail, reserveren, ophaalcode, Bestellingen via Room, Favorieten | K7, K8, K9, K10, K12 | Laurens | |
+| 5 | Pakketdetail, reserveren, ophaalcode, Bestellingen via Room, Favorieten | K7, K8, K9, K10, K12 | Laurens | K7, K8, K9 klaar (23/11). Nog K10, K12. |
 | 6 | Annuleren, filters | K11, K6 | Laurens | K6 klaar (5/11). Nog K11. |
 | 6 | Robuustheid: geen internet, geen locatie, lege lijsten, ongeldige invoer, rotatie, laadindicatoren | G1, G2, G3 | Samen | |
 | 7 | Huisstijl en dark mode afwerken, alle Must-vereisten testen, demovideo opnemen | G4 | Samen | |
@@ -120,3 +120,11 @@ Noteer na elk overleg met de docent wat af is en wat gepland is.
 
 *18/11*
 - [x] Testdata uitgebreid: 10 testwinkels rond AP Hogeschool, een demo-klantaccount en langere ophaalvensters (`tools/seed-firestore.ps1`)
+
+*23/11*
+- [x] Pakketdetail: foto, winkel, adres (uit `stores`), beschrijving, prijs met doorstreepte originele waarde, ophaalvenster, aantal over en een kleine kaart met de winkel; te openen vanuit de lijst en vanuit de kaart. Aantal over wordt realtime bijgewerkt (K7)
+- [x] Reserveren: aantal kiezen van 1 tot wat er over is; `quantityLeft` verlagen en de reservatie aanmaken in één transactie, zodat twee klanten nooit hetzelfde laatste pakket krijgen (K8)
+- [x] Ophaalcode van 6 tekens zonder 0/O/1/I, getoond na het reserveren; werkt met de controle van de handelaar (H6) (K9)
+- [x] Een reservatie bewaart ook `bagTitle`, `storeName`, `pickupStart` en `pickupEnd`, zodat Bestellingen (K10) ze in Room kan zetten zonder het pakket op te vragen
+- [x] Geen internet, trage verbinding en "iemand anders was sneller" geven een duidelijke melding; laadindicator tijdens reserveren (deel van G1, G3)
+- [x] Unit tests voor reserveren en ophaalcodes (4 nieuwe tests, 37 in totaal)

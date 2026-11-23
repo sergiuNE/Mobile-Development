@@ -30,6 +30,10 @@ data object Orders
 @Serializable
 data object Favorites
 
+/** Bag detail with reserve button (K7, K8, K9), opened from the list or the map. */
+@Serializable
+data class BagDetail(val bagId: String)
+
 // Merchant tabs inside MerchantHome
 @Serializable
 data object MyBags

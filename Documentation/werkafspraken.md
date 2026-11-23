@@ -68,6 +68,8 @@ Voer deze commando's uit in de projectmap (op Windows `gradlew.bat` in plaats va
 De namen uit de opgave liggen vast. Je mag velden toevoegen, maar niet hernoemen.
 
 - **Firestore:** `users/{uid}`, `stores/{storeId}`, `bags/{bagId}`, `reservations/{id}`. De rol in `users` is `"customer"` of `"merchant"`.
+- **Extra velden:** `stores` heeft ook `street` en `postcode` (apart aanpasbaar in Mijn winkel). `reservations` heeft ook `bagTitle`, `storeName`, `pickupStart` en `pickupEnd`, gekopieerd uit het pakket bij het reserveren, zodat Bestellingen (K10) ze in Room kan zetten zonder het pakket op te vragen.
+- **Ophaalcode:** 6 tekens uit A–Z en 2–9, zonder 0/O/1/I. Reserveren verlaagt `quantityLeft` en maakt de reservatie aan in één transactie.
 - **Room:** `FavoriteStore`, `CachedReservation`, `CachedAddress` in één `@Database`-singleton.
 
 ## Architectuurregels

@@ -72,8 +72,8 @@ private val LOCATION_PERMISSIONS = arrayOf(
 )
 
 @Composable
-fun DiscoverScreen(viewModel: DiscoverViewModel, modifier: Modifier = Modifier) {
-    LocationGate(viewModel, modifier) { state -> BagsNearby(state, viewModel, modifier) }
+fun DiscoverScreen(viewModel: DiscoverViewModel, onBagClick: (String) -> Unit, modifier: Modifier = Modifier) {
+    LocationGate(viewModel, modifier) { state -> BagsNearby(state, viewModel, onBagClick, modifier) }
 }
 
 /**
@@ -187,7 +187,7 @@ private fun PickOnMap(
 }
 
 @Composable
-private fun BagsNearby(state: DiscoverUiState, viewModel: DiscoverViewModel, modifier: Modifier) {
+private fun BagsNearby(state: DiscoverUiState, viewModel: DiscoverViewModel, onBagClick: (String) -> Unit, modifier: Modifier) {
     Column(modifier = modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -216,7 +216,7 @@ private fun BagsNearby(state: DiscoverUiState, viewModel: DiscoverViewModel, mod
         }
         BagFilterChips(state, viewModel)
         if (state.isOffline) OfflineNote()
-        BagList(state, onRetry = viewModel::retryBags, modifier = Modifier.fillMaxWidth().weight(1f))
+        BagList(state, onRetry = viewModel::retryBags, onBagClick = onBagClick, modifier = Modifier.fillMaxWidth().weight(1f))
     }
 }
 
@@ -278,7 +278,7 @@ internal fun OfflineNote(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun BagList(state: DiscoverUiState, onRetry: () -> Unit, modifier: Modifier) {
+private fun BagList(state: DiscoverUiState, onRetry: () -> Unit, onBagClick: (String) -> Unit, modifier: Modifier) {
     when {
         state.isLoadingBags -> Box(modifier, contentAlignment = Alignment.Center) { CircularProgressIndicator() }
         state.bagsError != null -> Column(
@@ -297,7 +297,7 @@ private fun BagList(state: DiscoverUiState, onRetry: () -> Unit, modifier: Modif
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(vertical = 8.dp),
         ) {
-            items(state.bags, key = { it.id }) { BagCard(it) }
+            items(state.bags, key = { it.id }) { bag -> BagCard(bag, onClick = { onBagClick(bag.id) }) }
         }
     }
 }
@@ -307,8 +307,8 @@ internal fun DiscoverUiState.noBagsMessage(): Int =
     if (hasFilters) R.string.discover_no_bags_filtered else R.string.discover_no_bags
 
 @Composable
-internal fun BagCard(bag: BagListItem) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+internal fun BagCard(bag: BagListItem, onClick: () -> Unit) {
+    Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.padding(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),

@@ -56,6 +56,21 @@ class BagTest {
     }
 
     @Test
+    fun canReserveFromOneUpToWhatIsLeft() {
+        assertTrue(bag(quantityLeft = 2).canReserve(1, now))
+        assertTrue(bag(quantityLeft = 2).canReserve(2, now))
+        assertFalse(bag(quantityLeft = 2).canReserve(3, now))
+        assertFalse(bag(quantityLeft = 2).canReserve(0, now))
+    }
+
+    @Test
+    fun cannotReserveUnavailableBag() {
+        assertFalse(bag(quantityLeft = 0).canReserve(1, now))
+        assertFalse(bag(active = false).canReserve(1, now))
+        assertFalse(bag(pickupEnd = now).canReserve(1, now))
+    }
+
+    @Test
     fun listIsSortedByDistanceWithoutUnavailableBags() {
         val bags = listOf(
             bag(id = "far", latitude = 51.30),
