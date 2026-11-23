@@ -1,5 +1,17 @@
 package be.ap.nowaste.data.reservation
 
+import java.security.SecureRandom
+import java.util.Random
+
+const val PICKUP_CODE_LENGTH = 6
+
+// No 0/O and 1/I: the merchant reads the code from the customer's screen and types it (H6)
+private const val PICKUP_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+
+/** K9: a random code of 6 characters, shown to the customer and checked by the merchant. */
+fun newPickupCode(random: Random = SecureRandom()): String =
+    (1..PICKUP_CODE_LENGTH).map { PICKUP_CODE_ALPHABET[random.nextInt(PICKUP_CODE_ALPHABET.length)] }.joinToString("")
+
 // The value is what we store in the "status" field of reservations/{id}.
 enum class ReservationStatus(val value: String) {
     RESERVED("reserved"),
