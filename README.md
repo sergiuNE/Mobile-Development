@@ -42,7 +42,13 @@ Alle commando's staan in [werkafspraken.md](Documentation/werkafspraken.md#comma
 
 Zonder `-Password` gebruikt het script `seed.password` uit `local.properties` (niet gecommit). Staat dat er nog niet, dan maakt het een wachtwoord aan en zet het daar. Elk teamlid heeft dus een eigen wachtwoord voor de demo-accounts op zijn machine: maakte de andere de accounts al aan, geef dan zijn wachtwoord mee met `-Password`.
 
-De ophaalvensters starten vanaf het moment dat je het script uitvoert en de meeste pakketten blijven ongeveer 8 uur beschikbaar. Voer het script uit op de dag van de demo. Opnieuw uitvoeren kan veilig, dezelfde documenten worden overschreven.
+De ophaalvensters starten vanaf het moment dat je het script uitvoert en de meeste pakketten blijven ongeveer 8 uur beschikbaar. Voer het script uit op de dag van de demo. Opnieuw uitvoeren kan veilig, dezelfde documenten worden overschreven. Ook de aantallen staan dan terug op hun beginwaarde, ook als er tijdens het testen pakketten gereserveerd werden. De testreservaties zelf blijven in Firestore staan.
+
+Inloggen als demo-klant op een toestel via USB zonder het wachtwoord over te typen: tik in de app op het veld Email en voer dan dit uit in de projectmap.
+
+```powershell
+$adb="$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"; $pw=((Select-String -Path local.properties -Pattern '^seed\.password=(.*)$').Matches[0].Groups[1].Value); & $adb shell input text "demo-customer@nowaste.test"; & $adb shell input keyevent 61; & $adb shell input text $pw; & $adb shell input keyevent 66
+```
 
 ## Projectstructuur
 
