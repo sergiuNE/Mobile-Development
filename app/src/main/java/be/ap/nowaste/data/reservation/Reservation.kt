@@ -1,5 +1,6 @@
 package be.ap.nowaste.data.reservation
 
+import be.ap.nowaste.data.local.CachedReservation
 import java.security.SecureRandom
 import java.util.Random
 
@@ -40,6 +41,20 @@ fun reservedQuantityByBag(reservations: List<Reservation>): Map<String, Int> =
     reservations.filter { it.status != ReservationStatus.CANCELLED }
         .groupBy { it.bagId }
         .mapValues { (_, list) -> list.sumOf { it.quantity } }
+
+/** K11: a customer may cancel until the pickup window starts, and only a reservation that is still open. */
+fun canCancel(status: ReservationStatus?, pickupStart: Long, now: Long): Boolean =
+    status == ReservationStatus.RESERVED && now < pickupStart
+
+fun CachedReservation.canCancel(now: Long): Boolean = canCancel(ReservationStatus.fromValue(status), pickupStart, now)
+
+/** K10: active means still to be picked up: reserved and the pickup window is not over. */
+fun CachedReservation.isActive(now: Long): Boolean =
+    ReservationStatus.fromValue(status) == ReservationStatus.RESERVED && pickupEnd > now
+
+/** K10: the active orders first, then the past ones (collected, cancelled or expired). The order inside each list stays. */
+fun splitActiveAndPast(orders: List<CachedReservation>, now: Long): Pair<List<CachedReservation>, List<CachedReservation>> =
+    orders.partition { it.isActive(now) }
 
 /** Pickup codes are shown in capitals, but the merchant may type them in lowercase or with spaces. */
 fun normalizePickupCode(code: String): String = code.filterNot { it.isWhitespace() }.uppercase()

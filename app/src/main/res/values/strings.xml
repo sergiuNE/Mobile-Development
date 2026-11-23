@@ -6,7 +6,6 @@
     <string name="nav_orders">Orders</string>
     <string name="nav_favorites">Favorites</string>
 
-    <string name="orders_placeholder">Your reservations will appear here.</string>
     <string name="favorites_placeholder">Your favorite stores will appear here.</string>
 
     <string name="discover_bags_near">Bags near %1$s</string>
@@ -53,6 +52,26 @@
     <string name="reserved_code_label">Your pickup code</string>
     <string name="reserved_instructions">Show this code in the store between %1$s and %2$s.</string>
     <string name="reserved_done">Done</string>
+
+    <string name="orders_empty">No orders yet. Reserve a bag in Discover and it will show up here.</string>
+    <string name="orders_active">Active</string>
+    <string name="orders_past">Past</string>
+    <string name="orders_pickup_window">Pick up %1$s, %2$s – %3$s</string>
+    <plurals name="orders_quantity">
+        <item quantity="one">%1$d bag</item>
+        <item quantity="other">%1$d bags</item>
+    </plurals>
+    <string name="orders_status_reserved">Reserved</string>
+    <string name="orders_status_collected">Collected</string>
+    <string name="orders_status_cancelled">Cancelled</string>
+    <string name="orders_offline">You\'re offline. These orders may be out of date.</string>
+    <string name="orders_cancel_button">Cancel reservation</string>
+    <string name="orders_cancel_title">Cancel this reservation?</string>
+    <string name="orders_cancel_message">The bags become available for other customers again.</string>
+    <string name="orders_cancel_confirm">Cancel reservation</string>
+    <string name="orders_cancel_keep">Keep it</string>
+    <string name="orders_cancel_not_possible">This reservation can no longer be cancelled.</string>
+    <string name="orders_cancel_slow">The connection is slow. Your reservation may still be cancelled: check this list before you try again.</string>
 
     <string name="location_title">Find bags near you</string>
     <string name="location_explanation">NoWaste uses your location to show surprise bags nearby. You can also choose a location on the map yourself.</string>

@@ -1,6 +1,8 @@
 package be.ap.nowaste.data.reservation
 
+import be.ap.nowaste.data.local.CachedReservation
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -54,6 +56,48 @@ class ReservationTest {
         val code = newPickupCode()
         val list = reservations + reservation("r5", "bagC", 1, code, ReservationStatus.RESERVED)
         assertEquals("r5", findOpenReservation(list, code.lowercase())?.id)
+    }
+
+    private fun order(id: String, status: String, pickupStart: Long = 1_000, pickupEnd: Long = 2_000) = CachedReservation(
+        id, customerId = "customer", bagId = "bag", bagTitle = "Bread", storeName = "Bakery", quantity = 1,
+        pickupCode = "AB12CD", pickupStart = pickupStart, pickupEnd = pickupEnd, status = status, createdAt = 0,
+    )
+
+    @Test
+    fun canCancelOnlyBeforePickupStart() {
+        assertTrue(order("a", "reserved").canCancel(now = 999))
+        assertFalse(order("a", "reserved").canCancel(now = 1_000))
+        assertFalse(order("a", "reserved").canCancel(now = 1_500))
+    }
+
+    @Test
+    fun collectedCancelledOrUnknownCannotBeCancelled() {
+        assertFalse(order("a", "collected").canCancel(now = 0))
+        assertFalse(order("a", "cancelled").canCancel(now = 0))
+        assertFalse(order("a", "lost").canCancel(now = 0))
+    }
+
+    @Test
+    fun activeMeansReservedAndPickupNotOver() {
+        assertTrue(order("a", "reserved").isActive(now = 1_500))
+        assertFalse(order("a", "reserved").isActive(now = 2_000))
+        assertFalse(order("a", "collected").isActive(now = 0))
+        assertFalse(order("a", "cancelled").isActive(now = 0))
+    }
+
+    @Test
+    fun ordersAreSplitInActiveAndPastKeepingTheOrder() {
+        val orders = listOf(
+            order("r1", "reserved"),
+            order("r2", "cancelled"),
+            order("r3", "reserved", pickupEnd = 500),
+            order("r4", "reserved"),
+            order("r5", "collected"),
+        )
+        val (active, past) = splitActiveAndPast(orders, now = 600)
+        assertEquals(listOf("r1", "r4"), active.map { it.id })
+        assertEquals(listOf("r2", "r3", "r5"), past.map { it.id })
+        assertEquals(Pair(emptyList<CachedReservation>(), emptyList<CachedReservation>()), splitActiveAndPast(emptyList(), now = 0))
     }
 
     @Test
