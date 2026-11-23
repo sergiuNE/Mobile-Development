@@ -18,13 +18,13 @@ Voorstel, samen te bevestigen. Beide teamleden moeten alle code kunnen uitleggen
 - [x] Locatiepermissie en gekozen locatie, "Bags near {city}" (Engelse versie van "Pakketten in de buurt van {gemeente}") (K1, K2)
 - [x] Ontdekken-lijst, kaart met markers, realtime updates, filters (K3, K4, K5, K6)
 - [x] Pakketdetail, reserveren, ophaalcode (K7, K8, K9)
-- [ ] Bestellingen offline via Room, annuleren (K10, K11)
+- [x] Bestellingen offline via Room, annuleren (K10, K11)
 - [ ] Favorieten in Room (K12)
 
 **Samen:**
 - [x] Projectopzet: Compose, Navigation, MVVM-structuur
 - [x] Room-database: `AppDatabase` (singleton) met `CachedAddress`
-- [ ] Room-entities `FavoriteStore` (K12) en `CachedReservation` (K10) toevoegen aan `AppDatabase`
+- [ ] Room-entities `FavoriteStore` (K12) en `CachedReservation` (K10) toevoegen aan `AppDatabase` (`CachedReservation` klaar op 23/11, nog `FavoriteStore`)
 - [x] Retrofit voor Nominatim, met User-Agent, max. 1 aanvraag per seconde en cache in Room
 - [ ] Robuustheid: foutmeldingen, laadindicatoren, rotatie (G1, G2, G3)
 - [x] Eigen naam, huisstijl, app-icoon en dark mode (G4), zonder paars
@@ -36,14 +36,14 @@ Voorstel, samen te bevestigen. Beide teamleden moeten alle code kunnen uitleggen
 |---|---|---|---|---|
 | 1 | Naam en huisstijl kiezen, Android-project opzetten, Firebase koppelen, navigatiestructuur met bottom navigation | Basis | Samen | Klaar (28/10), tab Kaart (5/11) |
 | 2 | Auth met rollen, Firestore-datamodel, security rules | A1, A2, A3 | Sergiu | Klaar (28/10), ook A4 |
-| 2 | Room-database met de drie entities, Nominatim via Retrofit met `CachedAddress` | Basis | Laurens | Deels (4/11, Sergiu): `AppDatabase` met `CachedAddress` en Nominatim via Retrofit. Nog `FavoriteStore` en `CachedReservation`. |
+| 2 | Room-database met de drie entities, Nominatim via Retrofit met `CachedAddress` | Basis | Laurens | Deels (4/11, Sergiu): `AppDatabase` met `CachedAddress` en Nominatim via Retrofit. `CachedReservation` klaar (23/11, Laurens). Nog `FavoriteStore`. |
 | 3 | Mijn winkel met kaart en automatisch adres | H1, H2 | Sergiu | Klaar (4/11) |
 | 3 | Locatiepermissie, gemeente bovenaan, Ontdekken-lijst | K1, K2, K3 | Laurens | Klaar (5/11) |
 | 4 | Pakket aanbieden met foto, Mijn pakketten realtime | H3, H4, H5 | Sergiu | Klaar (18/11) |
 | 4 | Kaartweergave met markers, realtime updates | K4, K5 | Laurens | Klaar (5/11, vervroegd) |
 | 5 | Ophaalcode controleren, pakket aanpassen of offline halen, wachtwoord vergeten | H6, H7, A4 | Sergiu | Klaar: A4 (28/10), H6 en H7 (18/11, vervroegd) |
-| 5 | Pakketdetail, reserveren, ophaalcode, Bestellingen via Room, Favorieten | K7, K8, K9, K10, K12 | Laurens | K7, K8, K9 klaar (23/11). Nog K10, K12. |
-| 6 | Annuleren, filters | K11, K6 | Laurens | K6 klaar (5/11). Nog K11. |
+| 5 | Pakketdetail, reserveren, ophaalcode, Bestellingen via Room, Favorieten | K7, K8, K9, K10, K12 | Laurens | K7, K8, K9, K10 klaar (23/11). Nog K12. |
+| 6 | Annuleren, filters | K11, K6 | Laurens | K6 (5/11) en K11 (23/11) klaar. |
 | 6 | Robuustheid: geen internet, geen locatie, lege lijsten, ongeldige invoer, rotatie, laadindicatoren | G1, G2, G3 | Samen | |
 | 7 | Huisstijl en dark mode afwerken, alle Must-vereisten testen, demovideo opnemen | G4 | Samen | |
 
@@ -128,3 +128,9 @@ Noteer na elk overleg met de docent wat af is en wat gepland is.
 - [x] Een reservatie bewaart ook `bagTitle`, `storeName`, `pickupStart` en `pickupEnd`, zodat Bestellingen (K10) ze in Room kan zetten zonder het pakket op te vragen
 - [x] Geen internet, trage verbinding en "iemand anders was sneller" geven een duidelijke melding; laadindicator tijdens reserveren (deel van G1, G3)
 - [x] Unit tests voor reserveren en ophaalcodes (4 nieuwe tests, 37 in totaal)
+- [x] Bestellingen: actieve en vroegere reservaties met status (reserved, collected, cancelled), pakket, winkel, ophaalvenster, aantal en de ophaalcode bij actieve reservaties. Actief = gereserveerd en ophaalvenster nog niet voorbij, de rest staat onder "Past" (K10)
+- [x] Bestellingen leest enkel uit Room (`CachedReservation`); de reservaties van de klant worden realtime via `snapshots()` naar Room geschreven. Werkt ook offline, met een melding. `CachedReservation` heeft extra `customerId`, `bagId`, `quantity` en `createdAt`, zodat elke gebruiker op hetzelfde toestel enkel zijn eigen bestellingen ziet (K10)
+- [x] Room: `AppDatabase` versie 2 met `CachedReservation`; bij een nieuwe versie wordt de cache opnieuw opgebouwd
+- [x] Annuleren zolang het ophaalvenster niet begonnen is: rode knop met bevestiging; status naar `cancelled` en `quantityLeft` terug omhoog in één transactie, zodat het pakket meteen terug beschikbaar is (K11)
+- [x] Geen internet en "kan niet meer geannuleerd worden" geven een duidelijke melding; laadindicator tijdens annuleren; kaarten schuiven elke minuut mee met de tijd (deel van G1, G2, G3)
+- [x] Unit tests voor annuleren en actief/vroeger (4 nieuwe tests, 41 in totaal) en getest op een toestel (reserveren, annuleren, offline, rotatie)
