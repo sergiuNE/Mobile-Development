@@ -12,7 +12,9 @@ import be.ap.nowaste.R
 import be.ap.nowaste.data.bag.Bag
 import be.ap.nowaste.data.bag.BagRepository
 import be.ap.nowaste.data.bag.decodeBagPhoto
+import be.ap.nowaste.data.favorite.FavoriteRepository
 import be.ap.nowaste.data.isOnline
+import be.ap.nowaste.data.local.AppDatabase
 import be.ap.nowaste.data.reservation.NotEnoughBagsException
 import be.ap.nowaste.data.reservation.ReservationRepository
 import be.ap.nowaste.data.store.StoreRepository
@@ -62,6 +64,8 @@ data class BagDetailUiState(
     val photo: ImageBitmap? = null,
     /** Null until the store is loaded, or when it could not be loaded. */
     val address: String? = null,
+    /** K12: whether the store of this bag is a favorite, read from Room. */
+    val isFavorite: Boolean = false,
     /** K8: how many bags to reserve, from 1 to what is left. */
     val quantity: Int = 1,
     val isReserving: Boolean = false,
@@ -78,6 +82,7 @@ class BagDetailViewModel(application: Application, savedStateHandle: SavedStateH
     private val bagRepository = BagRepository()
     private val storeRepository = StoreRepository()
     private val reservationRepository = ReservationRepository()
+    private val favoriteRepository = FavoriteRepository(AppDatabase.get(application).favoriteStoreDao())
 
     private val _uiState = MutableStateFlow(BagDetailUiState())
     val uiState: StateFlow<BagDetailUiState> = _uiState.asStateFlow()
@@ -88,6 +93,9 @@ class BagDetailViewModel(application: Application, savedStateHandle: SavedStateH
     private var bagJob: Job? = null
     private var decodedPhotoBase64: String? = null
     private var loadedStoreId: String? = null
+    private var favoriteStoreId: String? = null
+    private var favoriteJob: Job? = null
+    private var storeName: String = ""
 
     init {
         observeBag()
@@ -116,7 +124,29 @@ class BagDetailViewModel(application: Application, savedStateHandle: SavedStateH
                     }
                     decodePhoto(bag)
                     loadAddress(bag.storeId)
+                    observeFavorite(bag.storeId, bag.storeName)
                 }
+        }
+    }
+
+    /** K12: Room -> heart. Started once per store, the bag flow itself keeps running. */
+    private fun observeFavorite(storeId: String, name: String) {
+        storeName = name
+        if (storeId == favoriteStoreId) return
+        favoriteStoreId = storeId
+        favoriteJob?.cancel()
+        favoriteJob = viewModelScope.launch {
+            favoriteRepository.isFavorite(storeId).collect { isFavorite -> _uiState.update { it.copy(isFavorite = isFavorite) } }
+        }
+    }
+
+    /** K12: works as soon as the bag is loaded. Without an address (offline, none set) it is saved empty and filled in later. */
+    fun onToggleFavorite() {
+        val storeId = favoriteStoreId ?: return
+        val address = _uiState.value.address.orEmpty()
+        val isFavorite = _uiState.value.isFavorite
+        viewModelScope.launch {
+            if (isFavorite) favoriteRepository.remove(storeId) else favoriteRepository.add(storeId, storeName, address)
         }
     }
 
@@ -142,6 +172,8 @@ class BagDetailViewModel(application: Application, savedStateHandle: SavedStateH
                 null
             }
             _uiState.update { it.copy(address = address) }
+            // K12: a favorite saved before the address was known gets it now
+            if (address != null) favoriteRepository.fillMissingAddress(storeId, address)
         }
     }
 

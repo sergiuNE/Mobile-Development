@@ -5,11 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-// FavoriteStore (K12) is added here as an extra entity. Everything in here is a cache, so a new version may wipe it.
-@Database(entities = [CachedAddress::class, CachedReservation::class], version = 2, exportSchema = false)
+// Everything in here is a cache, except FavoriteStore (K12). The destructive fallback also wipes the favorites
+// on a schema change, which is acceptable during development.
+@Database(entities = [CachedAddress::class, CachedReservation::class, FavoriteStore::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cachedAddressDao(): CachedAddressDao
     abstract fun cachedReservationDao(): CachedReservationDao
+    abstract fun favoriteStoreDao(): FavoriteStoreDao
 
     companion object {
         @Volatile

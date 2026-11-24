@@ -18,6 +18,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
@@ -26,6 +28,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -73,9 +76,19 @@ private fun Details(state: BagDetailUiState, bag: BagDetailItem, viewModel: BagD
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Photo(state.photo)
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(bag.storeName, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text(bag.title, style = MaterialTheme.typography.headlineSmall)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(bag.storeName, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(bag.title, style = MaterialTheme.typography.headlineSmall)
+                }
+                // K12: always usable, also offline or when the store has no address
+                IconButton(onClick = viewModel::onToggleFavorite) {
+                    Icon(
+                        if (state.isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        contentDescription = stringResource(if (state.isFavorite) R.string.favorite_remove else R.string.favorite_add),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
             }
             Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(bag.price, style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.primary)

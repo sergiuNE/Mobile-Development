@@ -90,7 +90,10 @@ data class DiscoverUiState(
     val city: String? = null,
     val isLoadingCity: Boolean = false,
     @StringRes val cityError: Int? = null,
+    /** Available bags by distance, with the distance and category filters applied. */
     val bags: List<BagListItem> = emptyList(),
+    /** Available bags by distance without those filters: the Favorites tab shows every bag of a store. */
+    val allBags: List<BagListItem> = emptyList(),
     /** Stores with at least one bag in [bags], for the markers on the map (K4). */
     val stores: List<StoreOnMap> = emptyList(),
     val isLoadingBags: Boolean = true,
@@ -109,6 +112,22 @@ data class DiscoverUiState(
 }
 
 private data class BagFilters(val location: Coordinates?, val maxDistanceKm: Int?, val category: StoreCategory?)
+
+/** K5, K6: the bags of stores in [category] and within [maxDistanceKm]. Null means no filter. */
+internal fun List<BagListItem>.inFilters(
+    categories: Map<String, StoreCategory>,
+    category: StoreCategory?,
+    maxDistanceKm: Int?,
+): List<BagListItem> = filter { bag ->
+    (category == null || categories[bag.storeId] == category) && (maxDistanceKm == null || bag.distanceInKm <= maxDistanceKm)
+}
+
+private data class BagsUpdate(
+    val allBags: List<BagListItem>,
+    val bags: List<BagListItem>,
+    val stores: List<StoreOnMap>,
+    val isFromCache: Boolean,
+)
 
 /**
  * Shared by the Discover (list) and Map tabs: both show the same bags around the same location, with the same filters.
@@ -165,15 +184,13 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
         bagsJob = viewModelScope.launch {
             combine(bagRepository.activeBags(), storeRepository.categoriesByStore(), filters, clock()) { result, categories, filters, now ->
                 val location = filters.location
-                val bags = if (location == null) {
+                val allBags = if (location == null) {
                     emptyList()
                 } else {
-                    val inCategory = result.bags.filter { filters.category == null || categories[it.storeId] == filters.category }
-                    val maxDistance = filters.maxDistanceKm?.let { it * 1000.0 }
-                    availableBagsByDistance(inCategory, location.latitude, location.longitude, now, maxDistance)
-                        .map { it.toListItem() }
+                    availableBagsByDistance(result.bags, location.latitude, location.longitude, now).map { it.toListItem() }
                 }
-                Triple(bags, bags.toStores(), result.isFromCache)
+                val bags = allBags.inFilters(categories, filters.category, filters.maxDistanceKm)
+                BagsUpdate(allBags, bags, bags.toStores(), result.isFromCache)
             }
                 // Sorting and decoding photos is too heavy for the main thread
                 .flowOn(Dispatchers.Default)
@@ -183,11 +200,12 @@ class DiscoverViewModel(application: Application) : AndroidViewModel(application
                         it.copy(isLoadingBags = false, bagsError = if (offline) R.string.error_no_internet else R.string.error_unknown)
                     }
                 }
-                .collect { (bags, stores, isFromCache) ->
+                .collect { (allBags, bags, stores, isFromCache) ->
                     _uiState.update { state ->
                         // A store whose last bag is gone also disappears from the selection
                         val storeIds = stores.map { it.id }.toSet()
                         state.copy(
+                            allBags = allBags,
                             bags = bags,
                             stores = stores,
                             isOffline = isFromCache,

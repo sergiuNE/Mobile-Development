@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import be.ap.nowaste.ui.navigation.NoWasteApp
 import be.ap.nowaste.ui.theme.NoWasteTheme
 
@@ -13,7 +16,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NoWasteTheme {
-                NoWasteApp()
+                // Surface sets the theme's text color, so screens without a Scaffold (login, register) are readable in dark mode
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    NoWasteApp()
+                }
             }
         }
     }

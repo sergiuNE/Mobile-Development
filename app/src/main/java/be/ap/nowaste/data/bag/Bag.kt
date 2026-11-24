@@ -32,15 +32,8 @@ data class Bag(
 
 data class BagWithDistance(val bag: Bag, val distanceInMeters: Double)
 
-/** Available bags around a location, nearest first. [maxDistanceInMeters] null means no limit (K6). */
-fun availableBagsByDistance(
-    bags: List<Bag>,
-    latitude: Double,
-    longitude: Double,
-    now: Long,
-    maxDistanceInMeters: Double? = null,
-): List<BagWithDistance> =
+/** Available bags around a location, nearest first. */
+fun availableBagsByDistance(bags: List<Bag>, latitude: Double, longitude: Double, now: Long): List<BagWithDistance> =
     bags.filter { it.isAvailable(now) }
         .map { BagWithDistance(it, it.distanceInMeters(latitude, longitude)) }
-        .filter { maxDistanceInMeters == null || it.distanceInMeters <= maxDistanceInMeters }
         .sortedBy { it.distanceInMeters }
