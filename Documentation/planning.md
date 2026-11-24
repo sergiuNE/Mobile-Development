@@ -138,7 +138,9 @@ Noteer na elk overleg met de docent wat af is en wat gepland is.
 *24/11*
 - [x] Favorieten: hartje naast de winkelnaam op het pakketdetail; de winkel wordt bewaard in Room (`FavoriteStore`: `storeId`, `name`, `address`, `addedAt`), enkel op dit toestel (K12)
 - [x] Tab Favorieten leest enkel uit Room: lijst met winkelnaam en adres, hartje om te verwijderen, melding bij een lege lijst (K12)
+- [x] Tik op een favoriete winkel: alle beschikbare pakketten van die winkel in een onderblad (zoals "View" op de kaart), los van de filters van Ontdekken; tik op een pakket opent het detail
 - [x] Hartje werkt ook offline of zonder adres; het adres wordt later aangevuld zodra het geladen is
 - [x] Room: `AppDatabase` versie 3 met `FavoriteStore`
 - [x] Dark mode: tekst op schermen zonder `Scaffold` (zoals "Welcome back" bij inloggen) was zwart op een donkere achtergrond; de app staat nu in een `Surface`, zodat de tekstkleur uit het thema komt (G4)
-- [x] Getest op een toestel: favoriet maken, tab Favorieten, verwijderen, lege lijst
+- [x] Afstands- en categoriefilter als aparte functie met unit tests (`BagFiltersTest`)
+- [x] Getest op een toestel: favoriet maken, tab Favorieten, pakketten van een favoriete winkel, verwijderen, lege lijst, rotatie, offline, login in dark mode
