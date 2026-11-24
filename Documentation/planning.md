@@ -19,12 +19,12 @@ Voorstel, samen te bevestigen. Beide teamleden moeten alle code kunnen uitleggen
 - [x] Ontdekken-lijst, kaart met markers, realtime updates, filters (K3, K4, K5, K6)
 - [x] Pakketdetail, reserveren, ophaalcode (K7, K8, K9)
 - [x] Bestellingen offline via Room, annuleren (K10, K11)
-- [ ] Favorieten in Room (K12)
+- [x] Favorieten in Room (K12)
 
 **Samen:**
 - [x] Projectopzet: Compose, Navigation, MVVM-structuur
 - [x] Room-database: `AppDatabase` (singleton) met `CachedAddress`
-- [ ] Room-entities `FavoriteStore` (K12) en `CachedReservation` (K10) toevoegen aan `AppDatabase` (`CachedReservation` klaar op 23/11, nog `FavoriteStore`)
+- [x] Room-entities `FavoriteStore` (K12) en `CachedReservation` (K10) toevoegen aan `AppDatabase` (`CachedReservation` 23/11, `FavoriteStore` 24/11)
 - [x] Retrofit voor Nominatim, met User-Agent, max. 1 aanvraag per seconde en cache in Room
 - [ ] Robuustheid: foutmeldingen, laadindicatoren, rotatie (G1, G2, G3)
 - [x] Eigen naam, huisstijl, app-icoon en dark mode (G4), zonder paars
@@ -36,13 +36,13 @@ Voorstel, samen te bevestigen. Beide teamleden moeten alle code kunnen uitleggen
 |---|---|---|---|---|
 | 1 | Naam en huisstijl kiezen, Android-project opzetten, Firebase koppelen, navigatiestructuur met bottom navigation | Basis | Samen | Klaar (28/10), tab Kaart (5/11) |
 | 2 | Auth met rollen, Firestore-datamodel, security rules | A1, A2, A3 | Sergiu | Klaar (28/10), ook A4 |
-| 2 | Room-database met de drie entities, Nominatim via Retrofit met `CachedAddress` | Basis | Laurens | Deels (4/11, Sergiu): `AppDatabase` met `CachedAddress` en Nominatim via Retrofit. `CachedReservation` klaar (23/11, Laurens). Nog `FavoriteStore`. |
+| 2 | Room-database met de drie entities, Nominatim via Retrofit met `CachedAddress` | Basis | Laurens | Deels (4/11, Sergiu): `AppDatabase` met `CachedAddress` en Nominatim via Retrofit. `CachedReservation` klaar (23/11, Laurens), `FavoriteStore` klaar (24/11, Laurens). |
 | 3 | Mijn winkel met kaart en automatisch adres | H1, H2 | Sergiu | Klaar (4/11) |
 | 3 | Locatiepermissie, gemeente bovenaan, Ontdekken-lijst | K1, K2, K3 | Laurens | Klaar (5/11) |
 | 4 | Pakket aanbieden met foto, Mijn pakketten realtime | H3, H4, H5 | Sergiu | Klaar (18/11) |
 | 4 | Kaartweergave met markers, realtime updates | K4, K5 | Laurens | Klaar (5/11, vervroegd) |
 | 5 | Ophaalcode controleren, pakket aanpassen of offline halen, wachtwoord vergeten | H6, H7, A4 | Sergiu | Klaar: A4 (28/10), H6 en H7 (18/11, vervroegd) |
-| 5 | Pakketdetail, reserveren, ophaalcode, Bestellingen via Room, Favorieten | K7, K8, K9, K10, K12 | Laurens | K7, K8, K9, K10 klaar (23/11). Nog K12. |
+| 5 | Pakketdetail, reserveren, ophaalcode, Bestellingen via Room, Favorieten | K7, K8, K9, K10, K12 | Laurens | K7, K8, K9, K10 klaar (23/11), K12 klaar (24/11). |
 | 6 | Annuleren, filters | K11, K6 | Laurens | K6 (5/11) en K11 (23/11) klaar. |
 | 6 | Robuustheid: geen internet, geen locatie, lege lijsten, ongeldige invoer, rotatie, laadindicatoren | G1, G2, G3 | Samen | |
 | 7 | Huisstijl en dark mode afwerken, alle Must-vereisten testen, demovideo opnemen | G4 | Samen | |
@@ -134,3 +134,11 @@ Noteer na elk overleg met de docent wat af is en wat gepland is.
 - [x] Annuleren zolang het ophaalvenster niet begonnen is: rode knop met bevestiging; status naar `cancelled` en `quantityLeft` terug omhoog in één transactie, zodat het pakket meteen terug beschikbaar is (K11)
 - [x] Geen internet en "kan niet meer geannuleerd worden" geven een duidelijke melding; laadindicator tijdens annuleren; kaarten schuiven elke minuut mee met de tijd (deel van G1, G2, G3)
 - [x] Unit tests voor annuleren en actief/vroeger (4 nieuwe tests, 41 in totaal) en getest op een toestel (reserveren, annuleren, offline, rotatie)
+
+*24/11*
+- [x] Favorieten: hartje naast de winkelnaam op het pakketdetail; de winkel wordt bewaard in Room (`FavoriteStore`: `storeId`, `name`, `address`, `addedAt`), enkel op dit toestel (K12)
+- [x] Tab Favorieten leest enkel uit Room: lijst met winkelnaam en adres, hartje om te verwijderen, melding bij een lege lijst (K12)
+- [x] Hartje werkt ook offline of zonder adres; het adres wordt later aangevuld zodra het geladen is
+- [x] Room: `AppDatabase` versie 3 met `FavoriteStore`
+- [x] Dark mode: tekst op schermen zonder `Scaffold` (zoals "Welcome back" bij inloggen) was zwart op een donkere achtergrond; de app staat nu in een `Surface`, zodat de tekstkleur uit het thema komt (G4)
+- [x] Getest op een toestel: favoriet maken, tab Favorieten, verwijderen, lege lijst
