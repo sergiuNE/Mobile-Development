@@ -6,7 +6,10 @@
     <string name="nav_orders">Orders</string>
     <string name="nav_favorites">Favorites</string>
 
-    <string name="favorites_placeholder">Your favorite stores will appear here.</string>
+    <string name="favorites_empty_title">No favorite stores yet</string>
+    <string name="favorites_empty_hint">Tap the heart on a bag to save its store.</string>
+    <string name="favorite_add">Add to favorites</string>
+    <string name="favorite_remove">Remove from favorites</string>
 
     <string name="discover_bags_near">Bags near %1$s</string>
     <string name="discover_bags_near_you">Bags near you</string>
