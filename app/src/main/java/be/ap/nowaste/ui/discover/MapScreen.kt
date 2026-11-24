@@ -1,5 +1,6 @@
 package be.ap.nowaste.ui.discover
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -68,7 +69,7 @@ fun MapScreen(viewModel: DiscoverViewModel, onBagClick: (String) -> Unit, modifi
 
         state.viewedStore?.let { store ->
             StoreBagsSheet(
-                store = store,
+                storeName = store.name,
                 bags = state.bags.filter { it.storeId == store.id },
                 onBagClick = { bagId ->
                     // Closed first, so the sheet is not open again when the customer comes back
@@ -133,18 +134,35 @@ private fun SelectedStoreCard(store: StoreOnMap, onView: () -> Unit, modifier: M
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun StoreBagsSheet(store: StoreOnMap, bags: List<BagListItem>, onBagClick: (String) -> Unit, onDismiss: () -> Unit) {
+internal fun StoreBagsSheet(
+    storeName: String,
+    bags: List<BagListItem>,
+    onBagClick: (String) -> Unit,
+    onDismiss: () -> Unit,
+    isLoading: Boolean = false,
+    @StringRes emptyMessage: Int = R.string.store_bags_empty,
+) {
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Text(
-            store.name,
+            storeName,
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(16.dp),
-        ) {
-            items(bags, key = { it.id }) { bag -> BagCard(bag, onClick = { onBagClick(bag.id) }) }
+        when {
+            isLoading -> Box(Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+            bags.isEmpty() -> Text(
+                stringResource(emptyMessage),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(16.dp),
+            )
+            else -> LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(16.dp),
+            ) {
+                items(bags, key = { it.id }) { bag -> BagCard(bag, onClick = { onBagClick(bag.id) }) }
+            }
         }
     }
 }

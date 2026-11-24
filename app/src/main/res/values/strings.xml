@@ -24,6 +24,8 @@
 
     <string name="map_loading_bags">Loading bags…</string>
     <string name="map_view_store">View</string>
+    <string name="store_bags_empty">No bags from this store right now.</string>
+    <string name="favorites_store_no_location">Pick your location in Discover first to see the bags of this store.</string>
     <plurals name="map_bags_available">
         <item quantity="one">%1$d bag available</item>
         <item quantity="other">%1$d bags available</item>

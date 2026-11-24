@@ -16,7 +16,12 @@ data class FavoritesUiState(
     /** True until Room gave the first list. */
     val isLoading: Boolean = true,
     val favorites: List<FavoriteStore> = emptyList(),
-)
+    /** Favorite whose bags are shown in the sheet. */
+    val openedStoreId: String? = null,
+) {
+    /** Null when nothing is opened or the store was removed from the favorites meanwhile. */
+    val openedStoreName: String? get() = favorites.find { it.storeId == openedStoreId }?.name
+}
 
 /** K12: reads the favorite stores from Room only. */
 class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
@@ -28,9 +33,13 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
 
     init {
         viewModelScope.launch {
-            repository.observeFavorites().collect { favorites -> _uiState.update { FavoritesUiState(isLoading = false, favorites = favorites) } }
+            repository.observeFavorites().collect { favorites -> _uiState.update { it.copy(isLoading = false, favorites = favorites) } }
         }
     }
+
+    fun onOpenStore(storeId: String) = _uiState.update { it.copy(openedStoreId = storeId) }
+
+    fun onCloseStore() = _uiState.update { it.copy(openedStoreId = null) }
 
     fun onRemove(storeId: String) {
         viewModelScope.launch { repository.remove(storeId) }

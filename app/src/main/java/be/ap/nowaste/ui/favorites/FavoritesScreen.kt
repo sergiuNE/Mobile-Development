@@ -28,11 +28,37 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.ap.nowaste.R
+import be.ap.nowaste.ui.discover.DiscoverViewModel
+import be.ap.nowaste.ui.discover.StoreBagsSheet
 
 /** K12: the favorite stores of this device, read from Room only. */
 @Composable
-fun FavoritesScreen(modifier: Modifier = Modifier, viewModel: FavoritesViewModel = viewModel()) {
+fun FavoritesScreen(
+    discoverViewModel: DiscoverViewModel,
+    onBagClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: FavoritesViewModel = viewModel(),
+) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val discoverState by discoverViewModel.uiState.collectAsStateWithLifecycle()
+
+    state.openedStoreName?.let { storeName ->
+        StoreBagsSheet(
+            storeName = storeName,
+            bags = discoverState.allBags.filter { it.storeId == state.openedStoreId },
+            onBagClick = { bagId ->
+                // Closed first, so the sheet is not open again when the customer comes back
+                viewModel.onCloseStore()
+                onBagClick(bagId)
+            },
+            onDismiss = viewModel::onCloseStore,
+            isLoading = discoverState.isLoadingBags,
+            emptyMessage = when {
+                discoverState.location == null -> R.string.favorites_store_no_location
+                else -> discoverState.bagsError ?: R.string.store_bags_empty
+            },
+        )
+    }
 
     when {
         state.isLoading -> Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
@@ -54,7 +80,7 @@ fun FavoritesScreen(modifier: Modifier = Modifier, viewModel: FavoritesViewModel
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(state.favorites, key = { it.storeId }) { favorite ->
-                Card(modifier = Modifier.fillMaxWidth()) {
+                Card(onClick = { viewModel.onOpenStore(favorite.storeId) }, modifier = Modifier.fillMaxWidth()) {
                     Row(modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(favorite.name, style = MaterialTheme.typography.titleMedium)

@@ -171,7 +171,7 @@ private fun CustomerHome(onLogout: () -> Unit) {
             composable<Discover> { DiscoverScreen(discoverViewModel, onBagClick = openBag) }
             composable<BagsMap> { MapScreen(discoverViewModel, onBagClick = openBag) }
             composable<Orders> { OrdersScreen() }
-            composable<Favorites> { FavoritesScreen() }
+            composable<Favorites> { FavoritesScreen(discoverViewModel, onBagClick = openBag) }
             composable<BagDetail> { BagDetailScreen(onDone = { navController.popBackStack() }) }
         }
     }

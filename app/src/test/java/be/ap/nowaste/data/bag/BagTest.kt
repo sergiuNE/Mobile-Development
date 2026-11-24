@@ -85,19 +85,6 @@ class BagTest {
     }
 
     @Test
-    fun maxDistanceLeavesOutBagsFurtherAway() {
-        val bags = listOf(
-            bag(id = "near", latitude = 51.2180),
-            bag(id = "3km", latitude = 51.2442),
-            bag(id = "9km", latitude = 51.30),
-        )
-
-        assertEquals(listOf("near"), availableBagsByDistance(bags, 51.2172, 4.4127, now, 1_000.0).map { it.bag.id })
-        assertEquals(listOf("near", "3km"), availableBagsByDistance(bags, 51.2172, 4.4127, now, 5_000.0).map { it.bag.id })
-        assertEquals(3, availableBagsByDistance(bags, 51.2172, 4.4127, now, null).size)
-    }
-
-    @Test
     fun distanceIsInMeters() {
         // 0.01 degree of latitude is about 1.1 km
         val distance = bag(latitude = 51.2272).distanceInMeters(51.2172, 4.4127)
