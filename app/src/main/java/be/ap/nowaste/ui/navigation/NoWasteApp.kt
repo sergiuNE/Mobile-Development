@@ -20,9 +20,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -127,7 +124,25 @@ private fun CustomerHome(onLogout: () -> Unit) {
     val isBagDetail = currentDestination?.hasRoute(BagDetail::class) == true
     val openBag = { bagId: String -> navController.navigate(BagDetail(bagId)) }
 
-    Scaffold(
+    // The detail gets the whole screen; back returns to the list or the map
+    val tabs = if (isBagDetail) emptyList() else customerDestinations.map { destination ->
+        NavigationTab(
+            label = destination.label,
+            icon = destination.icon,
+            selected = currentDestination?.hasRoute(destination.route::class) == true,
+            onClick = {
+                navController.navigate(destination.route) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+        )
+    }
+
+    NavigationScaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
@@ -141,33 +156,9 @@ private fun CustomerHome(onLogout: () -> Unit) {
                 actions = { LogoutButton(onLogout) },
             )
         },
-        bottomBar = {
-            // The detail gets the whole screen; back returns to the list or the map
-            if (!isBagDetail) NavigationBar {
-                customerDestinations.forEach { destination ->
-                    NavigationBarItem(
-                        selected = currentDestination?.hasRoute(destination.route::class) == true,
-                        onClick = {
-                            navController.navigate(destination.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = { Icon(destination.icon, contentDescription = null) },
-                        label = { Text(stringResource(destination.label)) },
-                    )
-                }
-            }
-        },
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Discover,
-            modifier = Modifier.padding(innerPadding),
-        ) {
+        tabs = tabs,
+    ) {
+        NavHost(navController = navController, startDestination = Discover) {
             composable<Discover> { DiscoverScreen(discoverViewModel, onBagClick = openBag) }
             composable<BagsMap> { MapScreen(discoverViewModel, onBagClick = openBag) }
             composable<Orders> { OrdersScreen() }

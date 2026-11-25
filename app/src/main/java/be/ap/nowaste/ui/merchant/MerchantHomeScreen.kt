@@ -1,7 +1,6 @@
 package be.ap.nowaste.ui.merchant
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
@@ -10,13 +9,9 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -33,6 +28,8 @@ import be.ap.nowaste.ui.navigation.BagForm
 import be.ap.nowaste.ui.navigation.LogoutButton
 import be.ap.nowaste.ui.navigation.MyBags
 import be.ap.nowaste.ui.navigation.MyStore
+import be.ap.nowaste.ui.navigation.NavigationScaffold
+import be.ap.nowaste.ui.navigation.NavigationTab
 
 private data class MerchantTab(val route: Any, @StringRes val label: Int, val icon: ImageVector)
 
@@ -51,7 +48,17 @@ fun MerchantHomeScreen(onLogout: () -> Unit) {
     val isBagForm = destination?.hasRoute(BagForm::class) == true
     val title = if (destination?.hasRoute(MyStore::class) == true) R.string.store_my_store else R.string.bags_my_bags
 
-    Scaffold(
+    // The form gets the whole screen; back returns to "My bags"
+    val tabs = if (isBagForm) emptyList() else merchantTabs.map { tab ->
+        NavigationTab(
+            label = tab.label,
+            icon = tab.icon,
+            selected = destination?.hasRoute(tab.route::class) == true,
+            onClick = { navController.openTab(tab.route) },
+        )
+    }
+
+    NavigationScaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(stringResource(title)) },
@@ -65,23 +72,9 @@ fun MerchantHomeScreen(onLogout: () -> Unit) {
                 actions = { LogoutButton(onLogout) },
             )
         },
-        bottomBar = {
-            // The form gets the whole screen; back returns to "My bags"
-            if (!isBagForm) {
-                NavigationBar {
-                    merchantTabs.forEach { tab ->
-                        NavigationBarItem(
-                            selected = destination?.hasRoute(tab.route::class) == true,
-                            onClick = { navController.openTab(tab.route) },
-                            icon = { Icon(tab.icon, contentDescription = null) },
-                            label = { Text(stringResource(tab.label)) },
-                        )
-                    }
-                }
-            }
-        },
-    ) { innerPadding ->
-        NavHost(navController = navController, startDestination = MyBags, modifier = Modifier.padding(innerPadding)) {
+        tabs = tabs,
+    ) {
+        NavHost(navController = navController, startDestination = MyBags) {
             composable<MyBags> {
                 MyBagsScreen(
                     onNewBag = { navController.navigate(BagForm()) },

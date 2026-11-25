@@ -13,6 +13,9 @@ Voorstel, samen te bevestigen. Beide teamleden moeten alle code kunnen uitleggen
 - [x] Pakket aanbieden met foto als Base64 (H3, H4)
 - [x] Mijn pakketten met reservaties, ophaalcode controleren, pakket aanpassen (H5, H6, H7)
 - [x] Feedback lector: eigen markers op de kaart, slider voor de afstand in km
+- [x] Robuustheid: foutmeldingen, laadindicatoren, rotatie (G1, G2, G3)
+- [x] Performance testing
+- [ ] Demovideo en voorbereiding presentatie
 
 **Laurens:** klant
 - [x] Locatiepermissie en gekozen locatie, "Bags near {city}" (Engelse versie van "Pakketten in de buurt van {gemeente}") (K1, K2)
@@ -26,9 +29,7 @@ Voorstel, samen te bevestigen. Beide teamleden moeten alle code kunnen uitleggen
 - [x] Room-database: `AppDatabase` (singleton) met `CachedAddress`
 - [x] Room-entities `FavoriteStore` (K12) en `CachedReservation` (K10) toevoegen aan `AppDatabase` (`CachedReservation` 23/11, `FavoriteStore` 24/11)
 - [x] Retrofit voor Nominatim, met User-Agent, max. 1 aanvraag per seconde en cache in Room
-- [ ] Robuustheid: foutmeldingen, laadindicatoren, rotatie (G1, G2, G3)
 - [x] Eigen naam, huisstijl, app-icoon en dark mode (G4), zonder paars
-- [ ] Demovideo en voorbereiding presentatie
 
 ## Fasen
 
@@ -44,8 +45,9 @@ Voorstel, samen te bevestigen. Beide teamleden moeten alle code kunnen uitleggen
 | 5 | Ophaalcode controleren, pakket aanpassen of offline halen, wachtwoord vergeten | H6, H7, A4 | Sergiu | Klaar: A4 (28/10), H6 en H7 (18/11, vervroegd) |
 | 5 | Pakketdetail, reserveren, ophaalcode, Bestellingen via Room, Favorieten | K7, K8, K9, K10, K12 | Laurens | K7, K8, K9, K10 klaar (23/11), K12 klaar (24/11). |
 | 6 | Annuleren, filters | K11, K6 | Laurens | K6 (5/11) en K11 (23/11) klaar. |
-| 6 | Robuustheid: geen internet, geen locatie, lege lijsten, ongeldige invoer, rotatie, laadindicatoren | G1, G2, G3 | Samen | |
-| 7 | Huisstijl en dark mode afwerken, alle Must-vereisten testen, demovideo opnemen | G4 | Samen | |
+| 6 | Robuustheid: geen internet, geen locatie, lege lijsten, ongeldige invoer, rotatie, laadindicatoren | G1, G2, G3 | Sergiu | Klaar (25/11) |
+| 7 | Huisstijl en dark mode afwerken, alle Must-vereisten testen, demovideo opnemen | G4 | Sergiu | Huisstijl, dark mode en tests klaar (25/11). Demovideo nog op te nemen. |
+| 7 | Performance testing: opstarttijd, vloeiend scrollen, geheugen | Basis | Sergiu | Klaar (25/11) |
 
 Must-vereisten gaan altijd voor Should-vereisten (A4, K6, K11, H6, H7, G4).
 
@@ -96,6 +98,30 @@ Noteer na elk overleg met de docent wat af is en wat gepland is.
 - [x] Feedback lector: afstandsfilter is een slider van 1 tot 20 km, met "Any distance" helemaal rechts; de slider vangt het terug-gebaar van Android niet meer op
 - [x] Geen internet, ongeldige invoer en een onleesbare foto geven een duidelijke melding; formulier en foto overleven rotatie (deel van G1, G2, G3)
 - [x] Unit tests voor prijs, ophaalvenster, foto verkleinen, aantal na aanpassen en ophaalcodes (12 nieuwe tests, 33 in totaal) en getest op de emulator
+
+*25/11*
+- [x] Robuustheid nagelopen op de emulator (Pixel 7, Android 13), in portret en landscape, light en dark mode (G1, G2, G3):
+  - geen internet (vliegtuigmodus): melding op Ontdekken en Bestellingen, reserveren geeft "No internet connection" in plaats van te laden of te crashen
+  - geen locatie: na 15 seconden zonder GPS-fix valt Ontdekken terug op een pin op de kaart
+  - lege lijsten: Bestellingen en Favorieten tonen een uitleg
+  - ongeldige invoer: registreren zonder gegevens toont een melding per veld
+  - laadindicatoren bij locatie, gemeente, pakketten, reserveren en opslaan
+- [x] Landscape: de tabs staan opzij in een `NavigationRail` in plaats van onderaan (`NavigationScaffold`, voor klant en handelaar). De balk onderaan nam in landscape een derde van de hoogte in (G2)
+- [x] Ontdekken: titel en filters scrollen mee met de lijst. In landscape bleef er anders bijna geen plaats over voor de pakketten (G2)
+- [x] Locatie kiezen op de kaart: in landscape staat de uitleg links en de kaart rechts; de kaart was een dunne strook (G2)
+- [x] Kaarten tekenen niet meer over de tabs en de systeembalk: de OSMDroid-`MapView` tekent buiten zijn eigen vlak, het scherm wordt nu afgeknipt (`clipToBounds`)
+- [x] Huisstijl en dark mode nagekeken op alle klant- en handelaarsschermen: NoWaste-palet, geen paars, tekst overal leesbaar (G4)
+- [x] Toetsenbord: de app gebruikt nu `adjustResize`. Zonder die instelling schoof Android het hele scherm omhoog bovenop de `imePadding()` van de formulieren, waardoor de titelbalk verdween en de velden onder het toetsenbord niet meer bereikbaar waren (pakket aanbieden, Mijn winkel, inloggen)
+- [x] Alle Must-vereisten getest op de emulator met een testklant en een testhandelaar:
+  - account: registreren als klant en als handelaar, inloggen, uitloggen, startscherm per rol (A1, A2, A3)
+  - handelaar: winkel met pin en automatisch adres (H1, H2), pakket aanbieden met foto uit de galerij (H3, H4), Mijn pakketten realtime (H5), foute code, code in kleine letters en een al gebruikte code (H6), aantal aanpassen en offline/online zetten (H7)
+  - klant: locatie kiezen op de kaart (K1), "Bags near Antwerpen" (K2), lijst, kaart en filters (K3, K4, K6), een nieuw pakket verschijnt meteen (K5), detail, reserveren en ophaalcode (K7, K8, K9), Bestellingen (K10), annuleren met het pakket meteen terug beschikbaar (K11), favoriet toevoegen, openen en verwijderen (K12)
+- [x] Performance getest op de emulator (debug-build, dus trager dan een release-build):
+  - koude start: 972–1136 ms over 5 metingen, gemiddeld ± 1,0 s
+  - scrollen in Ontdekken: 836 frames, 3,2 % janky, 50e percentiel 17 ms, 90e percentiel 21 ms
+  - kaart verslepen: 282 frames, 6,7 % janky, 90e percentiel 20 ms
+  - geheugen: ± 141 MB PSS met lijst en kaart geladen
+  - unit test `BagPerformanceTest`: 10 000 pakketten filteren en sorteren op afstand blijft onder 200 ms (1 nieuwe test, 43 in totaal)
 
 **Laurens**
 - [x] Android-project opgezet: Kotlin, Jetpack Compose, type-safe Navigation Compose, package `be.ap.nowaste`
