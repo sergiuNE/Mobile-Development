@@ -2,6 +2,7 @@ package be.ap.nowaste.ui.discover
 
 import android.Manifest
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.LocalActivity
@@ -17,7 +18,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -47,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -147,10 +151,7 @@ private fun PickOnMap(
     onOpenSettings: () -> Unit,
     modifier: Modifier,
 ) {
-    Column(
-        modifier = modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+    val info = @Composable {
         Text(stringResource(R.string.location_pick_title), style = MaterialTheme.typography.headlineSmall)
         state.locationMessage?.let {
             Text(stringResource(it), color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -168,11 +169,8 @@ private fun PickOnMap(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        PinPickerMap(
-            pin = state.pin,
-            onPinPlaced = viewModel::onPinPlaced,
-            modifier = Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(12.dp)),
-        )
+    }
+    val buttons = @Composable {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
             if (state.location != null) {
                 OutlinedButton(onClick = viewModel::onCancelPick, modifier = Modifier.weight(1f)) {
@@ -184,39 +182,73 @@ private fun PickOnMap(
             }
         }
     }
+    val map = @Composable { mapModifier: Modifier ->
+        PinPickerMap(pin = state.pin, onPinPlaced = viewModel::onPinPlaced, modifier = mapModifier.clip(RoundedCornerShape(12.dp)))
+    }
+
+    // In landscape the texts above the map left it only a thin strip: put them next to it instead
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        Row(modifier = modifier.fillMaxSize().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(
+                modifier = Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                info()
+                buttons()
+            }
+            map(Modifier.weight(1f).fillMaxHeight())
+        }
+    } else {
+        Column(modifier = modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            info()
+            map(Modifier.fillMaxWidth().weight(1f))
+            buttons()
+        }
+    }
 }
 
 @Composable
 private fun BagsNearby(state: DiscoverUiState, viewModel: DiscoverViewModel, onBagClick: (String) -> Unit, modifier: Modifier) {
-    Column(modifier = modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = when {
-                    state.city != null -> stringResource(R.string.discover_bags_near, state.city)
-                    else -> stringResource(R.string.discover_bags_near_you)
-                },
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.weight(1f),
-            )
-            if (state.isLoadingCity) CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-            TextButton(onClick = viewModel::onChooseOnMap) { Text(stringResource(R.string.discover_change_location)) }
-        }
-        if (state.isApproximate) {
-            Text(
-                stringResource(R.string.discover_approximate),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        if (state.cityError != null) {
-            FormMessage(state.cityError, isError = true)
-            TextButton(onClick = viewModel::retryCity, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                Text(stringResource(R.string.retry))
+    // One scrolling list: in landscape a fixed header with the filters left no room for the bags
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(16.dp),
+    ) {
+        item {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = when {
+                        state.city != null -> stringResource(R.string.discover_bags_near, state.city)
+                        else -> stringResource(R.string.discover_bags_near_you)
+                    },
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.weight(1f),
+                )
+                if (state.isLoadingCity) CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                TextButton(onClick = viewModel::onChooseOnMap) { Text(stringResource(R.string.discover_change_location)) }
             }
         }
-        BagFilterChips(state, viewModel)
-        if (state.isOffline) OfflineNote()
-        BagList(state, onRetry = viewModel::retryBags, onBagClick = onBagClick, modifier = Modifier.fillMaxWidth().weight(1f))
+        if (state.isApproximate) {
+            item {
+                Text(
+                    stringResource(R.string.discover_approximate),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        if (state.cityError != null) {
+            item {
+                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    FormMessage(state.cityError, isError = true)
+                    TextButton(onClick = viewModel::retryCity) { Text(stringResource(R.string.retry)) }
+                }
+            }
+        }
+        item { BagFilterChips(state, viewModel) }
+        if (state.isOffline) item { OfflineNote() }
+        bagItems(state, onRetry = viewModel::retryBags, onBagClick = onBagClick)
     }
 }
 
@@ -277,28 +309,26 @@ internal fun OfflineNote(modifier: Modifier = Modifier) {
     )
 }
 
-@Composable
-private fun BagList(state: DiscoverUiState, onRetry: () -> Unit, onBagClick: (String) -> Unit, modifier: Modifier) {
+private fun LazyListScope.bagItems(state: DiscoverUiState, onRetry: () -> Unit, onBagClick: (String) -> Unit) {
+    val messageModifier = Modifier.fillMaxWidth().padding(vertical = 48.dp)
     when {
-        state.isLoadingBags -> Box(modifier, contentAlignment = Alignment.Center) { CircularProgressIndicator() }
-        state.bagsError != null -> Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(stringResource(state.bagsError), textAlign = TextAlign.Center)
-            Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
+        state.isLoadingBags -> item {
+            Box(messageModifier, contentAlignment = Alignment.Center) { CircularProgressIndicator() }
         }
-        state.bags.isEmpty() -> Box(modifier, contentAlignment = Alignment.Center) {
-            Text(stringResource(state.noBagsMessage()), textAlign = TextAlign.Center)
+        state.bagsError != null -> item {
+            Column(
+                modifier = messageModifier,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(stringResource(state.bagsError), textAlign = TextAlign.Center)
+                Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
+            }
         }
-        else -> LazyColumn(
-            modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 8.dp),
-        ) {
-            items(state.bags, key = { it.id }) { bag -> BagCard(bag, onClick = { onBagClick(bag.id) }) }
+        state.bags.isEmpty() -> item {
+            Text(stringResource(state.noBagsMessage()), textAlign = TextAlign.Center, modifier = messageModifier)
         }
+        else -> items(state.bags, key = { it.id }) { bag -> BagCard(bag, onClick = { onBagClick(bag.id) }) }
     }
 }
 
